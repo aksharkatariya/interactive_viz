@@ -1,7 +1,7 @@
 # Project Proposal on Urbanization Analysis in Africa
 
 ## Researcher
-** kshar Katariya **
+** Akshar Katariya **
 
 ## Project Description
 This project will analyze urbanization trends across African nations to identify factors driving urban growth, explore spatial distributions of urban areas, and understand socio-economic implications. The study will utilize data from the Africapolis platform, which compiles information on the urban agglomerations of various African countries.
@@ -24,3 +24,13 @@ population densitiies in the cities of Africa
 #### URL: [2020 Election Results](https://www.nytimes.com/interactive/2020/11/03/us/elections/results-president.html)
 #### How I plan to use this:
 I like this way of visualizing a whole, but also giving a chance to dive deeper into the state. I plan to do the same with African nations. If a viewer wants to know more, they can hover over the country. 
+
+### Example Sketch
+
+![alt text](https://github.com/aksharkatariya/interactive_viz/blob/c387bc5610cc9542d3a42a6d3ef8921b485d77c1/Screenshot%202024-11-09%20at%2020.57.18.png?raw=true)
+
+
+## Questions
+- How feasible is it to make tooltips with graphs like it is showed in the picture?
+- I think this data might be a little thin and uninteresting with only population statistics, and I was thinking of attaching more data such as GDP or other economic data. Do you have any suggestions/examples that I can refer to for visualizing another domain like economics along with urbanization?
+
