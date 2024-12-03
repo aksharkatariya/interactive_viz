@@ -3,6 +3,37 @@
     <link href="style.css" rel="stylesheet" />
     <script src="js/d3.v7.js"></script>
   </head>
+     <style>
+
+  body {
+    background-color: #fce4c8;
+    font-family: Arial, sans-serif;
+    margin: 10;
+    padding: 10;
+  }
+
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: Georgia, serif;
+    color: #333;
+  }
+
+
+  #map-info-container {
+    display: flex;
+    flex-direction: row;
+  }
+
+
+  #info-box {
+    width: 1800px;
+    margin-left: 20px;
+    padding: 10px;
+    border: 0px solid;
+    background-color: #fce4c8;
+
+  }
+    </style>
   <body>
     <h1>Electricity Sources in U.S.</h1>
     <p>
@@ -39,7 +70,7 @@ The sources of electricity generation in the United States vary widely across st
             <h3>Deviation from National Average</h3>
             <p id="info-text">Select a state to see details about its energy sources.</p>
           </div>
-            <button id="toggle-opacity" style="margin-top: 10px;">Toggle Opacity</button>
+
         </div>
       </div>
 
@@ -167,22 +198,23 @@ function updateChart() {
   const deviationBars = d3.select("#info-box").selectAll(".deviation-bar").data(chartData);
 
   deviationBars
-    .enter()
-    .append("div")
-    .attr("class", "deviation-bar")
-    .style("height", "20px")
-    .style("margin", "5px 0")
-    .style("background", d => (d.deviation > 0 ? "green" : "red"))
-    .merge(deviationBars)
-    .style("width", d => `${(deviationScale(d.deviation))}px`)
-    .text(d => `${d.fuel}`);
+  .enter()
+  .append("div")
+  .attr("class", "deviation-bar")
+  .style("height", "25px")
+  .style("margin", "5px 0")
+  .style("position", "relative")
+  .style("background", "#8B9E6B")
+  .merge(deviationBars)
+  .style("width", d => `${Math.abs(deviationScale(d.deviation))}px`)
+  .style("left", d => (d.deviation < 0 ? `calc(50% - ${Math.abs(deviationScale(d.deviation))}px)` : "50%"))
+  .text(d => `${d.fuel}`);
 
-  deviationBars.exit().remove();
+deviationBars.exit().remove();
 }
 
 updateChart();
 </script>
-      </script>
     </section>
   </body>
 </html>
