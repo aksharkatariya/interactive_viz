@@ -15,9 +15,33 @@ const width = 800;
 const height = 400;
 const margin = {top: 50, bottom: 50, left: 50, right: 50};
 
+// Create scales
+const xScale = d3.scaleBand()
+    .domain(states.map(d => d.state))
+    .range([margin.left, width - margin.right])
+    .padding(0.1);
+
+const yScale = d3.scaleLinear()
+    .domain([0, d3.max(states, d => d.coal)])
+    .range([height - margin.bottom, margin.top]);
+
+
+
+// Create the SVG container
 const svg = d3.select('#d3-container')
     .append('svg')
-    .attr('height', height - margin.top - margin.bottom)
-    .attr('width', width - width.left - width.right)
-    .attr('viewBox', [0, 0, width, height])
+    .attr('height', height)
+    .attr('width', width);
+
+// Create rectangles for coal emissions
+svg.selectAll('.coal-rect')
+    .data(states)
+    .enter()
+    .append('rect')
+    .attr('class', 'coal-rect')
+    .attr('x', d => xScale(d.state))
+    .attr('y', d => yScale(d.coal))
+    .attr('width', xScale.bandwidth())
+    .attr('height', d => height - margin.bottom - yScale(d.coal))
+    .attr('fill', 'steelblue')
 

@@ -8,6 +8,7 @@
         margin: 20px;
         padding: 10px;
     }
+
 </style>
 <head>
     <meta charset="UTF-8">
@@ -15,10 +16,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://d3js.org/topojson.v2.min.js"></script>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        #state-select { margin: 20px; padding: 5px; }
-    </style>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
 </head>
 <body>
     <select id="state-select">
@@ -28,81 +27,110 @@
      <div id="d3-container2"></div>
 
 
-    <script>
-        const states = [
-            { state: "Alabama", coal: 33.0, natural_gas: 40.0, nuclear: 22.0, renewables: 5.0 },
-            { state: "Alaska", coal: 10.0, natural_gas: 50.0, nuclear: 0.0, renewables: 40.0 },
-            { state: "Arizona", coal: 25.0, natural_gas: 30.0, nuclear: 35.0, renewables: 10.0 },
-            { state: "Arkansas", coal: 40.0, natural_gas: 30.0, nuclear: 20.0, renewables: 10.0 },
-            { state: "California", coal: 0.0, natural_gas: 40.0, nuclear: 5.0, renewables: 55.0 },
-            { state: "Colorado", coal: 35.0, natural_gas: 30.0, nuclear: 0.0, renewables: 35.0 },
-            { state: "Connecticut", coal: 1.0, natural_gas: 40.0, nuclear: 45.0, renewables: 14.0 },
-            { state: "Delaware", coal: 10.0, natural_gas: 70.0, nuclear: 0.0, renewables: 20.0 },
-            { state: "Florida", coal: 20.0, natural_gas: 60.0, nuclear: 15.0, renewables: 5.0 },
-            { state: "Georgia", coal: 20.0, natural_gas: 40.0, nuclear: 30.0, renewables: 10.0 }
-        ];
+     <script>
+         const states = [
+             {state: "Alabama (United States)", coal: 33.0, natural_gas: 40.0, nuclear: 22.0, renewables: 5.0},
+             {state: "Alaska (United States)", coal: 10.0, natural_gas: 50.0, nuclear: 0.0, renewables: 40.0},
+             {state: "Arizona (United States)", coal: 25.0, natural_gas: 30.0, nuclear: 35.0, renewables: 10.0},
+             {state: "Arkansas (United States)", coal: 40.0, natural_gas: 30.0, nuclear: 20.0, renewables: 10.0},
+             {state: "California (United States)", coal: 0.0, natural_gas: 40.0, nuclear: 5.0, renewables: 55.0},
+             {state: "Colorado (United States)", coal: 35.0, natural_gas: 30.0, nuclear: 0.0, renewables: 35.0},
+             {state: "Connecticut (United States)", coal: 1.0, natural_gas: 40.0, nuclear: 45.0, renewables: 14.0},
+             {state: "Delaware (United States)", coal: 10.0, natural_gas: 70.0, nuclear: 0.0, renewables: 20.0},
+             {state: "Florida (United States)", coal: 20.0, natural_gas: 60.0, nuclear: 15.0, renewables: 5.0},
+             {state: "Georgia (United States)", coal: 20.0, natural_gas: 40.0, nuclear: 30.0, renewables: 10.0}
+         ];
+         const stateSelect = d3.select("#state-select");
+         const container = d3.select("#d3-container");
+         const map_container = d3.select("#d3-container2");
 
-        const stateSelect = d3.select("#state-select");
-        const container = d3.select("#d3-container");
+         // Populate dropdown
+         stateSelect.selectAll("option.state")
+             .data(states)
+             .enter()
+             .append("option")
+             .attr("value", d => d.state)
+             .attr("class", "state")
+             .text(d => d.state);
 
+         const totalWidth = 800;
 
-        // Populate dropdown
-        stateSelect.selectAll("option.state")
-            .data(states)
-            .enter()
-            .append("option")
-            .attr("value", d => d.state)
-            .attr("class", "state")
-            .text(d => d.state);
-
-        const totalWidth = 800;
-        const colors = {
-            coal: "#8B4513",
-            natural_gas: "#3CB371",
-            nuclear: "#4169E1",
-            renewables: "#90EE90"
-        };
-
-        const svg = container.append("svg")
-            .attr("width", totalWidth)
-            .attr("height", 300)
-            .style("display", "none");
-
-        // Dropdown change event
-        stateSelect.on("change", function() {
-            // Clear previous visualization
-            svg.selectAll("rect").remove();
-
-            const selectedState = this.value;
-            if (!selectedState) {
-                svg.style("display", "none");
-                return;
-            }
-
-            const state = states.find(s => s.state === selectedState);
-
-            svg.style("display", "block");
-            let currentX = 0;
-
+         const colors = {
+             coal: "#8B4513",
+             natural_gas: "#3CB371",
+             nuclear: "#4169E1",
+             renewables: "#90EE90"
+         };
+         const svg = container.append("svg")
+             .attr("width", totalWidth)
+             .attr("height", 300)
+             .style("display", "none");
+         // Dropdown change event
+         stateSelect.on("change", function () {
+             // Clear previous visualization
+             svg.selectAll("rect").remove();
+             const selectedState = this.value;
+             if (!selectedState) {
+                 svg.style("display", "none");
+                 return;
+             }
+             const state = states.find(s => s.state === selectedState);
+             svg.style("display", "block");
+             let trialX = 0;
              Object.keys(state)
-                .filter(key => key !== 'state')
-                .forEach(source => {
-                    const rectWidth = (state[source] / 100) * totalWidth;
+                 .filter(key => key !== 'state')
+                 .forEach(source => {
 
-                    // Draw rectangles based on emissions
-                    svg.append("rect")
-                        .attr("x", currentX)
-                        .attr("y", 10)
-                        .attr("width", rectWidth)
-                        .attr("height", 280)
-                        .attr("fill", colors[source]);
+                     const rectWidth = (state[source] / 100) * totalWidth;
+                     console.log(rectWidth);
+                     svg.append("rect")
+                         .attr("x", trialX)
+                         .attr("y", 10)
+                         .attr("width", rectWidth)
+                         .attr("height", 280)
+                         .attr("fill", colors[source]);
+                     trialX += rectWidth;
+                 });
+         });
+
+// MAP ////////////////////////////////////////////////////////////
+            const svg_map = map_container.append("svg"),
+           // var svg = d3.select("svg"),
+             width = +svg_map.attr(120),
+             height = +svg_map.attr(190);
+            //console.log("Rendering");
+         // Map and projection
+         var projection = d3.geoMercator()
+             .scale(150) // This is the zoom
+             .translate([380, 180]); // You have to play with these values to center your map
+
+         // Load external data and boot
+         d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/us_states_hexgrid.geojson.json", function (data) {
+
+// Define the color scale
+const colorScale = d3.scaleSequential()
+    .domain([0, d3.max(states, d => d.coal)]) // Set domain based on coal values
+    .interpolator(d3.interpolateBlues); // Use a blue color scheme
+
+// Append the states to the SVG
+svg_map.append("g")
+    .selectAll("path")
+    .data(data.features)
+    .enter()
+    .append("path")
+    .attr("fill", d => {
+        // Find the state in the `states` array and get its coal value
+        const stateData = states.find(s => s.state === d.properties.google_name); // Assuming the GeoJSON has state names in `d.properties.name`
+        return stateData ? colorScale(stateData.coal) : "#ccc"; // Default color if no data is found
+    })
+    .attr("d", d3.geoPath().projection(projection))
+    .attr("stroke", "black");
 
 
-                    currentX += rectWidth;
-                });
+            })
 
-
-        });
-    </script>
+     </script>
 </body>
 </html>
+
+<!-- https://d3-graph-gallery.com/graph/hexbinmap_geo_basic.html -->

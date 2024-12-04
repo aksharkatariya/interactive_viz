@@ -6,6 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="769e6229-3b35-4ad1-af8a-4e56f28bc692" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/trial1.html" beforeDir="false" afterPath="$PROJECT_DIR$/trial1.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,7 +82,7 @@
       <workItem from="1733197511493" duration="994000" />
       <workItem from="1733198536223" duration="434000" />
       <workItem from="1733198996001" duration="10600000" />
-      <workItem from="1733295212395" duration="1075000" />
+      <workItem from="1733295212395" duration="9432000" />
     </task>
     <servers />
   </component>
@@ -109,5 +111,17 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/trial1.html</url>
+          <line>107</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
