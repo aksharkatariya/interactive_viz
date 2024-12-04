@@ -1,15 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <style>
-    body { font-family: Arial, sans-serif; }
-    #state-select { margin: 20px; padding: 5px; }
-    #d3-container, #d3-container2 {
-        border: 2px dotted #000;
-        margin: 20px;
-        padding: 10px;
-    }
-
-</style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        #state-select {
+            margin-bottom: 20px;
+            padding: 5px;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .first-content {
+            display: flex;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        #d3-container {
+            width: 65%;
+            border: 2px dotted #000;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        #d3-container_text {
+            width: 35%;
+            border: 2px dotted #000;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        #d3-container2 {
+            width: 100%;
+            border: 2px dotted #000;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+    </style>
 <head>
     <meta charset="UTF-8">
     <title>State Energy Sources</title>
@@ -23,8 +51,12 @@
     <select id="state-select">
         <option value="">Select a State</option>
     </select>
-    <div id="d3-container"></div>
-     <div id="d3-container2"></div>
+    <div class="first-content">
+        <div id="d3-container"></div>
+        <div id="d3-container_text"></div>
+    </div>
+
+    <div id="d3-container2"></div>
 
 
      <script>
@@ -43,6 +75,7 @@
          const stateSelect = d3.select("#state-select");
          const container = d3.select("#d3-container");
          const map_container = d3.select("#d3-container2");
+         const text_container = d3.select("#d3-container_text");
 
          // Populate dropdown
          stateSelect.selectAll("option.state")
@@ -53,7 +86,7 @@
              .attr("class", "state")
              .text(d => d.state);
 
-         const totalWidth = 800;
+         const totalWidth = 600;
 
          const colors = {
              coal: "#8B4513",
@@ -65,7 +98,7 @@
              .attr("width", totalWidth)
              .attr("height", 300)
              .style("display", "none");
-         // Dropdown change event
+         // Dropdown change event for rect
          stateSelect.on("change", function () {
              // Clear previous visualization
              svg.selectAll("rect").remove();
@@ -92,6 +125,8 @@
                      trialX += rectWidth;
                  });
          });
+
+
 
 // MAP ////////////////////////////////////////////////////////////
             const svg_map = map_container.append("svg"),
