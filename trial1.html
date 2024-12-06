@@ -60,6 +60,9 @@
 
 
      <script>
+
+         const national_average = [
+             {coal: 33.0, natural_gas: 40.0, nuclear: 22.0, renewables: 5.0}];
          const states = [
              {state: "Alabama (United States)", coal: 33.0, natural_gas: 40.0, nuclear: 22.0, renewables: 5.0},
              {state: "Alaska (United States)", coal: 10.0, natural_gas: 50.0, nuclear: 0.0, renewables: 40.0},
@@ -94,37 +97,57 @@
              nuclear: "#4169E1",
              renewables: "#90EE90"
          };
-         const svg = container.append("svg")
+         const svg_stackbar = container.append("svg")
              .attr("width", totalWidth)
              .attr("height", 300)
              .style("display", "none");
-         // Dropdown change event for rect
+
+         const svg_text = text_container.append("svg")
+             .attr("width", 300)
+             .attr("height", 300);
+
+
+
+         // Dropdown change for rect
          stateSelect.on("change", function () {
-             // Clear previous visualization
-             svg.selectAll("rect").remove();
+             // Clearing previous visualization
+             svg_stackbar.selectAll("rect").remove();
+             svg_text.selectAll("text").remove();
              const selectedState = this.value;
              if (!selectedState) {
-                 svg.style("display", "none");
+                 svg_stackbar.style("display", "none");
                  return;
              }
              const state = states.find(s => s.state === selectedState);
-             svg.style("display", "block");
+            svg_stackbar.style("display", "block");
+            svg_text.style("display", "block");
              let trialX = 0;
-             Object.keys(state)
-                 .filter(key => key !== 'state')
-                 .forEach(source => {
+             let text_gap = 20;
+            const energySources = Object.keys(state).filter(key => key !== 'state');
+
+            energySources.forEach(source => {
 
                      const rectWidth = (state[source] / 100) * totalWidth;
-                     console.log(rectWidth);
-                     svg.append("rect")
+                    // console.log(rectWidth);
+                     svg_stackbar.append("rect")
                          .attr("x", trialX)
                          .attr("y", 10)
                          .attr("width", rectWidth)
                          .attr("height", 280)
                          .attr("fill", colors[source]);
+
+                     svg_text.append("text")
+                         .attr("x", 10)
+                         .attr("y", text_gap)
+                         .text(`-${source}: ${state[source]}%`)
+                         .style("fill", colors[source]);
+
                      trialX += rectWidth;
+                     text_gap += 20;
                  });
          });
+
+
 
 
 
@@ -155,14 +178,13 @@ svg_map.append("g")
     .append("path")
     .attr("fill", d => {
         // Find the state in the `states` array and get its coal value
-        const stateData = states.find(s => s.state === d.properties.google_name); // Assuming the GeoJSON has state names in `d.properties.name`
+        const stateData = states.find(s => s.state === d.properties.google_name);
         return stateData ? colorScale(stateData.coal) : "#ccc"; // Default color if no data is found
     })
     .attr("d", d3.geoPath().projection(projection))
-    .attr("stroke", "black");
+    .attr("stroke", "black")
 
-
-            })
+    });
 
      </script>
 </body>
