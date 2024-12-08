@@ -1,4 +1,4 @@
-STATE,NUCLEAR,COAL,NATURAL.GAS,PETROLEUM,HYDRO,GEOTHERMAL,SOLAR...PV,WIND,BIOMASS,GOAL,COMMENT
+state,nuclear,coal,natural gas,petroleum,hydro,geothermal,solar,wind,biomass,goal,comment
 Alabama,32.2,18.8,37.6,0,8.8,0,0.3,0,2.2,NA,NA
 Alaska,0,13.7,41,14.9,27.7,0,0,2.1,0.6,NA,NA
 Arizona,29.1,13.2,44.4,0,5.4,0,6.2,1.5,0.2,NA,NA
