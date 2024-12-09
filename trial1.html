@@ -17,15 +17,22 @@
         .first-content {
             display: flex;
             width: 100%;
+            height: 50%;
             margin-bottom: 20px;
         }
         #d3-container {
-            width: 65%;
+            width: 50%;
             border: 2px dotted #000;
             padding: 10px;
             box-sizing: border-box;
         }
         #d3-container_text {
+            width: 15%;
+            border: 2px dotted #000;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        #d3-container_compare {
             width: 35%;
             border: 2px dotted #000;
             padding: 10px;
@@ -33,6 +40,7 @@
         }
         #d3-container2 {
             width: 100%;
+            height: 50%;
             border: 2px dotted #000;
             padding: 10px;
             box-sizing: border-box;
@@ -54,6 +62,7 @@
     <div class="first-content">
         <div id="d3-container"></div>
         <div id="d3-container_text"></div>
+        <div id="d3-container_compare"></div>
     </div>
 
     <div id="d3-container2"></div>
@@ -62,11 +71,12 @@
      <script>
 
          const national_average = [
-             {coal: 33.0, natural_gas: 40.0, nuclear: 22.0, renewables: 5.0}];
+             {"coal": 16.2, "natural gas": 43.1, "nuclear": 22.0, "petroleum": 0.4, "wind":
+             10.2, "solar": 3.9, "hydro": 5.7, "biomass": 1.1, "geothermal": 0.4}];
 
         const states = [
   {
-    "state": "Alabama",
+    "state": "Alabama (United States)",
     "nuclear": 32.2,
     "coal": 18.8,
     "natural gas": 37.6,
@@ -80,7 +90,7 @@
     "comment": "NA"
   },
   {
-    "state": "Alaska",
+    "state": "Alaska (United States)",
     "nuclear": 0,
     "coal": 13.7,
     "natural gas": 41,
@@ -94,7 +104,7 @@
     "comment": "NA"
   },
   {
-    "state": "Arizona",
+    "state": "Arizona (United States)",
     "nuclear": 29.1,
     "coal": 13.2,
     "natural gas": 44.4,
@@ -108,7 +118,7 @@
     "comment": "NA"
   },
   {
-    "state": "Arkansas",
+    "state": "Arkansas (United States)",
     "nuclear": 22.5,
     "coal": 35.6,
     "natural gas": 32.1,
@@ -122,7 +132,7 @@
     "comment": "NA"
   },
   {
-    "state": "California",
+    "state": "California (United States)",
     "nuclear": 8.4,
     "coal": 0.1,
     "natural gas": 49,
@@ -136,7 +146,7 @@
     "comment": "2018 legislation (SB 100) extended and expanded the existing state RPS. State agencies are required to submit implementation plans by January 1, 2021. Also in 2018, Gov. Jerry Brown�sExecutive Order B-55-18set a goal of statewide carbon neutrality by no later than 2045, with net negative GHG emissions thereafter."
   },
   {
-    "state": "Colorado",
+    "state": "Colorado (United States)",
     "nuclear": 0,
     "coal": 41.6,
     "natural gas": 25.5,
@@ -150,7 +160,7 @@
     "comment": "A 2019 law (SB 19-236) codified a pledge previously made by Xcel, whose service territory covers approximately 60% of the state�s load. It is mandatory “so long as it is technically and economically feasible.”"
   },
   {
-    "state": "Connecticut",
+    "state": "Connecticut (United States)",
     "nuclear": 39,
     "coal": 0.6,
     "natural gas": 55.6,
@@ -164,7 +174,7 @@
     "comment": "Governor Ned Lamont�s 2019 Executive Order (Number 3) set a 2040 goal for carbon-free electricity and asked the Department of Energy and Environmental Protection to develop a decarbonization plan for the power sector, in line with previous legislation to cut economy-wide carbon emissions by 80% below 2001 levels by 2050. In May 2022, Senate Bill 10,An Act Concerning Climate Change Mitigation, placed the goal into law."
   },
   {
-    "state": "Delaware",
+    "state": "Delaware (United States)",
     "nuclear": 0,
     "coal": 6.8,
     "natural gas": 85.8,
@@ -178,7 +188,7 @@
     "comment": "HB 99, signed by Gov. John Carney in August 2023, requires Delaware to reduce state-wide GHG emissions by 50% from 2005 levels by 2030 and 100% by 2050."
   },
   {
-    "state": "District of Columbia",
+    "state": "District of Columbia (United States)",
     "nuclear": 0,
     "coal": 0,
     "natural gas": 62.5,
@@ -206,7 +216,7 @@
     "comment": "NA"
   },
   {
-    "state": "Georgia",
+    "state": "Georgia (United States)",
     "nuclear": 26.8,
     "coal": 15.1,
     "natural gas": 46.3,
@@ -220,7 +230,7 @@
     "comment": "NA"
   },
   {
-    "state": "Hawaii",
+    "state": "Hawaii (United States)",
     "nuclear": 0,
     "coal": 11.8,
     "natural gas": 0,
@@ -234,7 +244,7 @@
     "comment": "2015 legislation (HB623) made Hawaii the first state to set a 100% RPS for the electricity sector."
   },
   {
-    "state": "Idaho",
+    "state": "Idaho (United States)",
     "nuclear": 0,
     "coal": 0.1,
     "natural gas": 26,
@@ -248,7 +258,7 @@
     "comment": "NA"
   },
   {
-    "state": "Illinois",
+    "state": "Illinois (United States)",
     "nuclear": 53.3,
     "coal": 23.9,
     "natural gas": 11.6,
@@ -262,7 +272,7 @@
     "comment": "2021 legislation (SB2408) established a goal of 100% clean energy by 2050, with interim targets of 40% by 2030 and 50% by 2040."
   },
   {
-    "state": "Indiana",
+    "state": "Indiana (United States)",
     "nuclear": 0,
     "coal": 57.7,
     "natural gas": 29.5,
@@ -276,7 +286,7 @@
     "comment": "NA"
   },
   {
-    "state": "Iowa",
+    "state": "Iowa (United States)",
     "nuclear": 0,
     "coal": 33.5,
     "natural gas": 9,
@@ -290,7 +300,7 @@
     "comment": "NA"
   },
   {
-    "state": "Kansas",
+    "state": "Kansas (United States)",
     "nuclear": 15.1,
     "coal": 34.2,
     "natural gas": 5.1,
@@ -304,7 +314,7 @@
     "comment": "NA"
   },
   {
-    "state": "Kentucky",
+    "state": "Kentucky (United States)",
     "nuclear": 0,
     "coal": 70.7,
     "natural gas": 21,
@@ -318,7 +328,7 @@
     "comment": "NA"
   },
   {
-    "state": "Louisiana",
+    "state": "Louisiana (United States)",
     "nuclear": 17.6,
     "coal": 8,
     "natural gas": 64.8,
@@ -332,7 +342,7 @@
     "comment": "Governor John Bel Edwards� 2020 Executive Order (JBE 2020-18) established a Climate Initiatives Task Force to develop a roadmap and make recommendations."
   },
   {
-    "state": "Maine",
+    "state": "Maine (United States)",
     "nuclear": 0,
     "coal": 0.6,
     "natural gas": 24.7,
@@ -346,7 +356,7 @@
     "comment": "2019 legislation (LD 1494) increased Maine�s RPS to 80% by 2030, and set a goal of 100% by 2050. AlsoLD1679sets an economy-wide goal of 80% cuts to greenhouse gases by 2050."
   },
   {
-    "state": "Maryland",
+    "state": "Maryland (United States)",
     "nuclear": 37.7,
     "coal": 14.7,
     "natural gas": 37.1,
@@ -360,7 +370,7 @@
     "comment": "The General Assembly enacted theClimate Solutions Now Act of 2022. This wide-ranging legislation includes the 2045 net-zero goal."
   },
   {
-    "state": "Massachusetts",
+    "state": "Massachusetts (United States)",
     "nuclear": 0,
     "coal": 0,
     "natural gas": 76.9,
@@ -374,7 +384,7 @@
     "comment": "In 2020, the Secretary of Energy and Environmental Affairs set a 2050 net-zero GHG emissions goal under the authority of 2008 legislation. The same goal was then included in a March 2021 climate action law (Bill S.9). A decarbonization roadmap was released at the end of 2020."
   },
   {
-    "state": "Michigan",
+    "state": "Michigan (United States)",
     "nuclear": 29.6,
     "coal": 31.9,
     "natural gas": 26.6,
@@ -388,7 +398,7 @@
     "comment": "Senate Bill 271 (2023) requires all utilities to have a portfolio of 60% renewable energy by 2035, and 80% \"clean energy\"�which includes carbon capture and storage�by 2035 and 100% by 2040."
   },
   {
-    "state": "Minnesota",
+    "state": "Minnesota (United States)",
     "nuclear": 23.7,
     "coal": 26.5,
     "natural gas": 20.6,
@@ -402,7 +412,7 @@
     "comment": "2023 legislation (SF 4) requires electric utilities to get 100% of the electricity they sell from carbon-free sources by 2040, including renewables and nuclear power. There are interim targets of 80% carbon-free power in 2030 and 90% in 2035. The legislation also increases the state�s Renewable Energy Standard to 55% by 2035."
   },
   {
-    "state": "Mississippi",
+    "state": "Mississippi (United States)",
     "nuclear": 17.1,
     "coal": 8,
     "natural gas": 72.1,
@@ -416,7 +426,7 @@
     "comment": "NA"
   },
   {
-    "state": "Missouri",
+    "state": "Missouri (United States)",
     "nuclear": 5.5,
     "coal": 74.4,
     "natural gas": 8.7,
@@ -430,7 +440,7 @@
     "comment": "NA"
   },
   {
-    "state": "Montana",
+    "state": "Montana (United States)",
     "nuclear": 0,
     "coal": 43.2,
     "natural gas": 2,
@@ -444,7 +454,7 @@
     "comment": "NA"
   },
   {
-    "state": "Nebraska",
+    "state": "Nebraska (United States)",
     "nuclear": 17.8,
     "coal": 49.2,
     "natural gas": 4.1,
@@ -458,7 +468,7 @@
     "comment": "Nebraska is the only state served solely by publicly owned utilities. As of December 2021, the three public utilities that serve the vast majority of customers have all adopted 100% clean energy goals."
   },
   {
-    "state": "Nevada",
+    "state": "Nevada (United States)",
     "nuclear": 0,
     "coal": 6.6,
     "natural gas": 62.5,
@@ -486,7 +496,7 @@
     "comment": "NA"
   },
   {
-    "state": "New Jersey",
+    "state": "New Jersey (United States)",
     "nuclear": 45.8,
     "coal": 1.7,
     "natural gas": 47.8,
@@ -500,7 +510,7 @@
     "comment": "Governor Phil Murphy�s Executive Order 315 in 2023 set a goal of ensuring 100% of energy sold in the state comes from clean sources by 2035 and directed BPU to develop an updated Energy Master Plan by 2024."
   },
   {
-    "state": "New Mexico",
+    "state": "New Mexico (United States)",
     "nuclear": 0,
     "coal": 35.5,
     "natural gas": 28.4,
@@ -514,7 +524,7 @@
     "comment": "2019 legislation (SB 489) requires utilities to have a zero-carbon power supply by 2045, including at least 80% from renewables, with the exception of rural electric coops which have a 2050 target date."
   },
   {
-    "state": "New York",
+    "state": "New York (United States)",
     "nuclear": 24.9,
     "coal": 0,
     "natural gas": 45.6,
@@ -528,7 +538,7 @@
     "comment": "2019 legislation (S6599) requires zero-emissions electricity by 2040 and sets a goal of cutting all state GHGs 85% by 2050. A Climate Action Council will develop a plan."
   },
   {
-    "state": "North Carolina",
+    "state": "North Carolina (United States)",
     "nuclear": 32.8,
     "coal": 15.5,
     "natural gas": 35.9,
@@ -542,7 +552,7 @@
     "comment": "2021 legislation (HB 951) requires the North Carolina Utilities Commission to “take all reasonable steps” to achieve a 70% reduction in CO2 emissions from electric generating facilities in the state by 2030 and carbon neutrality by 2050. The 2022 Executive Order 246 sets an economy-wide target of net-zero emissions by \"no later than 2050,\" sets a goal that half of new vehicle sales must be electric vehicles by 2030, incorporates environmental justice and equity into climate programs, and has other measures."
   },
   {
-    "state": "North Dakota",
+    "state": "North Dakota (United States)",
     "nuclear": 0,
     "coal": 57.1,
     "natural gas": 3.4,
@@ -556,7 +566,7 @@
     "comment": "NA"
   },
   {
-    "state": "Ohio",
+    "state": "Ohio (United States)",
     "nuclear": 14.2,
     "coal": 37.1,
     "natural gas": 43.9,
@@ -570,7 +580,7 @@
     "comment": "NA"
   },
   {
-    "state": "Oklahoma",
+    "state": "Oklahoma (United States)",
     "nuclear": 0,
     "coal": 14,
     "natural gas": 40.8,
@@ -584,7 +594,7 @@
     "comment": "NA"
   },
   {
-    "state": "Oregon",
+    "state": "Oregon (United States)",
     "nuclear": 0,
     "coal": 0,
     "natural gas": 33.3,
@@ -598,7 +608,7 @@
     "comment": "2021 legislation (HB 2021) requires investor-owned utilities to reduce greenhouse gas emissions associated with the electricity they sell to 80 percent below baseline emissions levels by 2030, 90 percent below baseline emissions levels by 2035, and 100 percent below baseline emissions levels by 2040."
   },
   {
-    "state": "Pennsylvania",
+    "state": "Pennsylvania (United States)",
     "nuclear": 31.4,
     "coal": 12.1,
     "natural gas": 52.7,
@@ -612,7 +622,7 @@
     "comment": "NA"
   },
   {
-    "state": "Puerto Rico",
+    "state": "Puerto Rico (United States)",
     "nuclear": "NA",
     "coal": "NA",
     "natural gas": "NA",
@@ -626,7 +636,7 @@
     "comment": "2019 legislation (SB1121), the Public Energy Policy Law of Puerto Rico, set a timeline for reaching 100% renewable electricity by the year 2050."
   },
   {
-    "state": "Rhode Island",
+    "state": "Rhode Island (United States)",
     "nuclear": 0,
     "coal": 0,
     "natural gas": 90.9,
@@ -640,7 +650,7 @@
     "comment": "Governor Gina Raimondo�s 2020 Executive Order (20-01) requires the Office of Energy Resources to “conduct economic and energy market analysis and develop viable policy and programmatic pathways” to meet 100% of statewide electricity deliveries with renewables by 2030. 2022 legislation (H7277 SUB A) updates the state's RPS to require 100% of RI's electricity to be offset by renewable production by 2033."
   },
   {
-    "state": "South Carolina",
+    "state": "South Carolina (United States)",
     "nuclear": 53.8,
     "coal": 15.2,
     "natural gas": 23.3,
@@ -654,7 +664,7 @@
     "comment": "NA"
   },
   {
-    "state": "South Dakota",
+    "state": "South Dakota (United States)",
     "nuclear": 0,
     "coal": 9.2,
     "natural gas": 8.7,
@@ -668,7 +678,7 @@
     "comment": "NA"
   },
   {
-    "state": "Tennessee",
+    "state": "Tennessee (United States)",
     "nuclear": 43.4,
     "coal": 22.4,
     "natural gas": 17.8,
@@ -682,7 +692,7 @@
     "comment": "NA"
   },
   {
-    "state": "Texas",
+    "state": "Texas (United States)",
     "nuclear": 8.3,
     "coal": 18.4,
     "natural gas": 48.6,
@@ -710,7 +720,7 @@
     "comment": "NA"
   },
   {
-    "state": "Vermont",
+    "state": "Vermont (United States)",
     "nuclear": 0,
     "coal": 0,
     "natural gas": 0.1,
@@ -724,7 +734,7 @@
     "comment": "2024 legislation (H289) updates the state's 2015 Renewable Energy Standard and requires all Vermont utilities to provide 100% renewable energy by 2035, with a 2030 goal for the state's two biggest utilities. The law increases the amount of in-state renewable energy utilities must procure from 10% to 20%. The law also restricts new large hydropower, expansions of existing large hydropower, and biomass power from being counted as new renewables."
   },
   {
-    "state": "Virginia",
+    "state": "Virginia (United States)",
     "nuclear": 30.3,
     "coal": 3.3,
     "natural gas": 57.4,
@@ -738,7 +748,7 @@
     "comment": "The 2020 Virginia Clean Economy Act (House Bill 1526andSenate Bill 851) requires zero-carbon utilities by 2050 at the latest."
   },
   {
-    "state": "Washington",
+    "state": "Washington (United States)",
     "nuclear": 7.8,
     "coal": 2.9,
     "natural gas": 14.4,
@@ -752,7 +762,7 @@
     "comment": "2019�s Clean Energy Transformation Act (SB5116) applies to all utilities. The state Commerce Department started a rulemaking process in August 2019. Utilities must file implementation plans by January 2022."
   },
   {
-    "state": "West Virginia",
+    "state": "West Virginia (United States)",
     "nuclear": 0,
     "coal": 90.8,
     "natural gas": 4.1,
@@ -766,7 +776,7 @@
     "comment": "NA"
   },
   {
-    "state": "Wisconsin",
+    "state": "Wisconsin (United States)",
     "nuclear": 15.2,
     "coal": 41.9,
     "natural gas": 33.9,
@@ -780,7 +790,7 @@
     "comment": "Governor Tony Evers� Executive Order (EO38) in 2019 directed a new Office of Sustainability and Clean Energy to “achieve a goal” of all carbon-free power by 2050."
   },
   {
-    "state": "Wyoming",
+    "state": "Wyoming (United States)",
     "nuclear": 0,
     "coal": 73.3,
     "natural gas": 3.5,
@@ -798,6 +808,7 @@
          const container = d3.select("#d3-container");
          const map_container = d3.select("#d3-container2");
          const text_container = d3.select("#d3-container_text");
+         const compare_container = d3.select("#d3-container_compare");
 
          // Populate dropdown
          stateSelect.selectAll("option.state")
@@ -811,7 +822,7 @@
          const totalWidth = 600;
 
                 const colors = {
-            nuclear: "#4169E1",      
+            nuclear: "#4169E1",
             coal: "#8B4513",
             natural_gas: "#3CB371",
             petroleum: "#FF4500",
@@ -830,6 +841,9 @@
              .attr("width", 300)
              .attr("height", 300);
 
+         const svg_diff = compare_container.append("svg")
+             .attr("width", 300)
+             .attr("height", 300);
 
 
          // Dropdown change for rect
@@ -837,17 +851,32 @@
              // Clearing previous visualization
              svg_stackbar.selectAll("rect").remove();
              svg_text.selectAll("text").remove();
+             svg_diff.selectAll("rect").remove();
              const selectedState = this.value;
              if (!selectedState) {
-                 svg_stackbar.style("display", "none");
+                   svg_stackbar.style("display", "none");
+                  svg_text.style("display", "none");
+                  svg_diff.style("display", "none");
                  return;
              }
              const state = states.find(s => s.state === selectedState);
             svg_stackbar.style("display", "block");
             svg_text.style("display", "block");
+            svg_diff.style("display", "block");
+
+           svg_diff.append("line")
+                .attr("x1", totalWidth/1.2)
+                .attr("y1", 0)
+                .attr("x2", totalWidth/1.2)
+                .attr("y2", 300)
+                .attr("stroke", "gray")
+                .attr("stroke-dasharray", "5,5");
+
              let trialX = 0;
-             let text_gap = 20;
-            const energySources = Object.keys(state).filter(key => key !== 'state');
+             let text_gap = 24;
+            const energySources = Object.keys(state).filter(key =>
+                    key !== 'state' && key !== 'goal' && key !== 'comment'
+                );
 
             energySources.forEach(source => {
 
@@ -863,11 +892,27 @@
                      svg_text.append("text")
                          .attr("x", 10)
                          .attr("y", text_gap)
-                         .text(`-${source}: ${state[source]}%`)
-                         .style("fill", colors[source]);
+                         .text(`- ${source}: ${state[source]}%`)
+                         .style("fill", colors[source])
+                         .style("font-size", "20px")
+                         .style("font-family", "Roboto");
+
+                      const nationalAvgValue = national_average[0][source];
+                const difference = state[source] - nationalAvgValue;
+                const diffRectWidth = Math.abs(difference / 100) * totalWidth;
+
+                     svg_diff.append("rect")
+                        .attr("fill", colors[source])
+                        .attr("width", Math.abs(difference)*6)
+                        .attr("height", 20)
+                        .attr("y", text_gap - 20)
+                        .attr("x", 400 / 2 + Math.min(0, difference)*6)
+                        .attr("opacity", 0.5);
+
+
 
                      trialX += rectWidth;
-                     text_gap += 20;
+                     text_gap += 28;
                  });
          });
 
@@ -885,31 +930,29 @@
          var projection = d3.geoMercator()
              .scale(150) // This is the zoom
              .translate([380, 180]); // You have to play with these values to center your map
-
          // Load external data and boot
          d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/us_states_hexgrid.geojson.json", function (data) {
 
-// Define the color scale
-const colorScale = d3.scaleSequential()
-    .domain([0, d3.max(states, d => d.coal)]) // Set domain based on coal values
-    .interpolator(d3.interpolateBlues); // Use a blue color scheme
-
-// Append the states to the SVG
 svg_map.append("g")
     .selectAll("path")
     .data(data.features)
     .enter()
     .append("path")
     .attr("fill", d => {
-        // Find the state in the `states` array and get its coal value
         const stateData = states.find(s => s.state === d.properties.google_name);
-        return stateData ? colorScale(stateData.coal) : "#ccc"; // Default color if no data is found
+        if (!stateData) return "#ccc";
+        return stateData.goal === "NA" ? "green" : "brown";
     })
     .attr("d", d3.geoPath().projection(projection))
     .attr("stroke", "black")
-
+    .attr("fill-opacity", 0)
+    .on("click", function(event, d){
+        d3.select(this).attr("fill-opacity", 1);
     });
 
+
+
+            })
      </script>
 </body>
 </html>
