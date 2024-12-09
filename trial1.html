@@ -5,9 +5,13 @@
             font-family: Georgia, serif;
             margin: 0;
             padding: 20px;
+            background-color: #f5f5dc; /* Light beige background */
+        }
+        #state-select-container {
+            margin-bottom: 20px;
         }
         #state-select {
-            margin-bottom: 20px;
+            margin-top: 10px;
             padding: 5px;
         }
         .container {
@@ -19,23 +23,19 @@
             width: 100%;
             height: 50%;
             margin-bottom: 20px;
-
         }
         #d3-container {
             width: 50%;
-            border: 2px dotted #000;
             padding: 10px;
             box-sizing: border-box;
         }
         #d3-container_text {
             width: 18%;
-            border: 2px dotted #000;
             padding: 10px;
             box-sizing: border-box;
         }
         #d3-container_compare {
             width: 32%;
-            border: 2px dotted #000;
             padding: 10px;
             box-sizing: border-box;
         }
@@ -59,6 +59,17 @@
             padding: 10px;
             box-sizing: border-box;
         }
+
+        .container-header {
+            font-size: 20px; /* Increased font size */
+            font-weight: bold; /* Made the header bold */
+        }
+
+        #header {
+            font-size: 24px; /* Larger font size for the main header */
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
     </style>
 <head>
     <meta charset="UTF-8">
@@ -68,10 +79,12 @@
     <script src="https://d3js.org/topojson.v2.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
-    <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
-    <script type="text/javascript" src="/path/to/textwrap.js"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="/path/to/textwrap.js"></script>
 </head>
 <body>
+
+<div id="header">Which state are you from?</div>
     <select id="state-select">
         <option value="">Select a State</option>
     </select>
@@ -80,7 +93,7 @@
             <div class="container-header">Energy Mix</div>
         </div>
         <div id="d3-container_text">
-            <div class="container-header">Energy Percentages</div>
+            <div class="container-header">Energy %</div>
         </div>
         <div id="d3-container_compare">
             <div class="container-header">Comparison to National Average</div>
@@ -207,7 +220,7 @@
          const container = d3.select("#d3-container");
          const goal_container = d3.select("#d3-container2");
          const text_container = d3.select("#d3-container_text");
-         const compare_container = d3.select("#d3-container_compare")
+         const compare_container = d3.select("#d3-container_compare");
          const map_container = d3.select("#d3-container_map");
 
          // Populate dropdown
@@ -245,9 +258,7 @@
              .attr("width", 300)
              .attr("height", 300);
 
-         const svg_map = map_container.append("svg")
-             .attr("width", 1000)
-             .attr("height", 1000);
+
 
          const svg_goal_text = goal_container.append("svg")
              .attr("width", 1000)
@@ -306,7 +317,6 @@ function wrap(text, width) {
             svg_text.style("display", "block");
             svg_diff.style("display", "block");
             svg_goal_text.style("display", "block");
-            svg_map.style("display", "block");
 
            svg_diff.append("line")
                 .attr("x1", totalWidth/1.2)
@@ -330,12 +340,12 @@ function wrap(text, width) {
                          .attr("x", trialX)
                          .attr("y", 10)
                          .attr("width", rectWidth)
-                         .attr("height", 280)
+                         .attr("height", 244)
                          .attr("fill", colors[source])
                          .attr("opacity", 0.8);
 
                      svg_text.append("text")
-                         .attr("x", 10)
+                         .attr("x", 15)
                          .attr("y", text_gap)
                          .text(`- ${source}: ${state[source]}%`)
                          .style("fill", colors[source])
@@ -380,35 +390,36 @@ function wrap(text, width) {
 
 });
 
-// MAP ////////////////////////////////////////////////////////////
+/// MAP ///
+const svg_map = map_container.append("svg")
+     .attr("width", 1000)
+     .attr("height", 1000);
 
 
 var projection = d3.geoMercator()
-            .scale(100)
-            .translate([400, 200]);
+    .scale(100)
+    .translate([100, 140]);
 
-        d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/us_states_hexgrid.geojson.json", function (data) {
+d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/us_states_hexgrid.geojson.json", function (data) {
+    console.log(data);
+    svg_map.append("g")
+        .selectAll("path")
+        .data(data.features)
+        .enter()
+        .append("path")
+        .attr("fill", d => {
+            const stateData = states.find(s => s.state === d.properties.google_name);
+            if (!stateData) return "#ccc";
+            return stateData.goal === "NA" ? "green" : "brown";
+        })
+        .attr("d", d3.geoPath().projection(projection))
+        .attr("stroke", "black")
+        .attr("fill-opacity", 1) // Set opacity to 1 to ensure visibility initially
+        .on("click", function (event, d) {
+            d3.select(this).attr("fill-opacity", 1); // Toggle fill-opacity on click
+        });
+});
 
-svg_map.append("g")
-    .selectAll("path")
-    .data(data.features)
-    .enter()
-    .append("path")
-    .attr("fill", d => {
-        const stateData = states.find(s => s.state === d.properties.google_name);
-        if (!stateData) return "#ccc";
-        return stateData.goal === "NA" ? "green" : "brown";
-    })
-    .attr("d", d3.geoPath().projection(projection))
-    .attr("stroke", "black")
-    .attr("fill-opacity", 0)
-    .on("click", function(event, d){
-        d3.select(this).attr("fill-opacity", 1);
-    });
-
-
-
-            })
      </script>
 </body>
 </html>
