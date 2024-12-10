@@ -113,9 +113,9 @@
 
 <div id="data-source-container" style="margin-top: 20px;">
     <strong>Data Source:</strong>
-    <a href="https://www.example.com" target="_blank">Example Source 1</a>
+    <a href="https://www.nei.org/resources/statistics/state-electricity-generation-fuel-shares" target="_blank">Nuclear Energy Institute</a>
     <span> | </span>
-    <a href="https://www.another-example.com" target="_blank">Example Source 2</a>
+    <a href="https://www.cesa.org/projects/100-clean-energy-collaborative/guide/table-of-100-clean-energy-states/" target="_blank">Clean Energy States Alliance</a>
 </div>
      <script>
 
@@ -871,6 +871,7 @@
 
          const totalWidth = 600;
 
+         // Colors specific to fuel
                 const colors = {
             nuclear: "#4169E1",
             coal: "#8B4513",
@@ -903,43 +904,45 @@
              .attr("width", 1000)
              .attr("height", 200);
 
-function wrap(text, width) {
-    text.each(function() {
-        const textElement = d3.select(this);
-        const words = textElement.text().split(/\s+/).reverse();
-        let word,
-            line = [],
-            lineNumber = 0,
-            lineHeight = 1.1, // ems
-            y = textElement.attr("y"),
-            dy = parseFloat(textElement.attr("dy")) || 0,
-            tspan = textElement.text(null)
-                .append("tspan")
-                .attr("x", textElement.attr("x"))
-                .attr("y", y)
-                .attr("dy", `${dy}em`);
-        while ((word = words.pop())) {
-            line.push(word);
-            tspan.text(line.join(" "));
-            if (tspan.node().getComputedTextLength() > width) {
-                line.pop();
-                tspan.text(line.join(" "));
-                line = [word];
-                tspan = textElement.append("tspan")
-                    .attr("x", textElement.attr("x"))
-                    .attr("y", y)
-                    .attr("dy", `${++lineNumber * lineHeight + dy}em`)
-                    .text(word);
+
+                     // function to wrap text
+            function wrap(text, width) {
+                text.each(function() {
+                    const textElement = d3.select(this);
+                    const words = textElement.text().split(/\s+/).reverse();
+                    let word,
+                        line = [],
+                        lineNumber = 0,
+                        lineHeight = 1.1, // ems
+                        y = textElement.attr("y"),
+                        dy = parseFloat(textElement.attr("dy")) || 0,
+                        tspan = textElement.text(null)
+                            .append("tspan")
+                            .attr("x", textElement.attr("x"))
+                            .attr("y", y)
+                            .attr("dy", `${dy}em`);
+                    while ((word = words.pop())) {
+                        line.push(word);
+                        tspan.text(line.join(" "));
+                        if (tspan.node().getComputedTextLength() > width) {
+                            line.pop();
+                            tspan.text(line.join(" "));
+                            line = [word];
+                            tspan = textElement.append("tspan")
+                                .attr("x", textElement.attr("x"))
+                                .attr("y", y)
+                                .attr("dy", `${++lineNumber * lineHeight + dy}em`)
+                                .text(word);
+                        }
+                    }
+                });
             }
-        }
-    });
-}
 
 
 
          // Dropdown change for rect
          stateSelect.on("change", function () {
-             // Clearing previous visualization
+             // Clearing previous visualization and texts
              svg_stackbar.selectAll("rect").remove();
              svg_text.selectAll("text").remove();
              svg_diff.selectAll("rect").remove();
@@ -959,16 +962,10 @@ function wrap(text, width) {
             svg_diff.style("display", "block");
             svg_goal.style("display", "block");
 
-           svg_diff.append("line")
-                .attr("x1", totalWidth/1.2)
-                .attr("y1", 0)
-                .attr("x2", totalWidth/1.2)
-                .attr("y2", 300)
-                .attr("stroke", "gray")
-                .attr("stroke-dasharray", "5,5");
 
              let trialX = 0;
              let text_gap = 24;
+             // removing name, goal and comment from consideration
             const energySources = Object.keys(state).filter(key =>
                     key !== 'state' && key !== 'goal' && key !== 'comment'
                 );
@@ -1030,107 +1027,109 @@ function wrap(text, width) {
                      trialX += rectWidth;
                      text_gap += 28;
                  });
+
             svg_goal.append("text")
-        .attr("x", 220)
-        .attr("y", 22)
-        .text("")
-        .style("font-size", "18px")
-        .style("font-family", "Arial")
-        .style("fill", "black")
+                .attr("x", 220)
+                .attr("y", 22)
+                .text("")
+                .style("font-size", "18px")
+                .style("font-family", "Arial")
+                .style("fill", "black")
                 .transition()
                 .duration(600)
                 .text(`Goal: ${state.goal}`)
                 .call(wrap, 300);
 
-    svg_goal.append("text")
-        .attr("x", 220)
-        .attr("y", 50)
-        .text("")
-        .style("font-size", "15px")
-        .style("font-family", "Arial")
-        .style("fill", "black")
-        .transition()
-        .duration(600)
-        .on("end", function() {
-        d3.select(this)
-            .text(`Comment: ${state.comment}`)
-            .call(wrap, 770);
-            });
+            svg_goal.append("text")
+                .attr("x", 220)
+                .attr("y", 50)
+                .text("")
+                .style("font-size", "15px")
+                .style("font-family", "Arial")
+                .style("fill", "black")
+                .transition()
+                .duration(600)
+                .on("end", function() {
+                d3.select(this)
+                    .text(`Comment: ${state.comment}`)
+                    .call(wrap, 770);
+                    });
 
 });
 
 
-
-
-
-// MAP ////////////////////////////////////////////////////////////
+         // MAP //
 
             //console.log("Rendering");
          // Map and projection
          var projection = d3.geoMercator()
-             .scale(300) // This is the zoom
-             .translate([1100, 400]); // You have to play with these values to center your map
+             .scale(300) // zoom
+             .translate([1100, 400]); //  values to center your map
+
          // Load external data and boot
          d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/us_states_hexgrid.geojson.json", function (data) {
 
              var path = d3.geoPath()
-    .projection(projection)
+            .projection(projection)
 
-svg_map.append("g")
-    .selectAll("path")
-    .data(data.features)
-    .enter()
-    .append("path")
-    .attr("fill", d => {
-        const stateData = states.find(s => s.state === d.properties.google_name);
-        if (!stateData) return "#ccc";
-        return stateData.goal === "NA" ? "brown" : "green";
-    })
-    .attr("d", d3.geoPath().projection(projection))
-    .attr("stroke", "black")
-    .attr("fill-opacity", 0)
-    .on("click", function(event, d){
-        d3.select(this).attr("fill-opacity", 1);
-    });
-  svg_map.append("g")
-      .selectAll("labels")
-      .data(data.features)
-      .enter()
-      .append("text")
-        .attr("x", function(d){return path.centroid(d)[0]})
-        .attr("y", function(d){return path.centroid(d)[1]})
-        .text(function(d){ return d.properties.iso3166_2})
-        .attr("text-anchor", "middle")
-        .attr("alignment-baseline", "central")
-        .style("font-size", 9)
-        .style("fill", "white")
+        svg_map.append("g")
+            .selectAll("path")
+            .data(data.features)
+            .enter()
+            .append("path")
+            .attr("fill", d => {
+                const stateData = states.find(s => s.state === d.properties.google_name);
+                if (!stateData) return "#ccc";
+                return stateData.goal === "NA" ? "brown" : "green";
+            })
+            .attr("d", d3.geoPath().projection(projection))
+            .attr("stroke", "black")
+            .attr("fill-opacity", 0)
+            .on("click", function(event, d){
+                d3.select(this).attr("fill-opacity", 1);
+            });
+             // adding labels to states
+          svg_map.append("g")
+              .selectAll("labels")
+              .data(data.features)
+              .enter()
+              .append("text")
+                .attr("x", function(d){return path.centroid(d)[0]})
+                .attr("y", function(d){return path.centroid(d)[1]})
+                .text(function(d){ return d.properties.iso3166_2})
+                .attr("text-anchor", "middle")
+                .attr("alignment-baseline", "central")
+                .style("font-size", 9)
+                .style("fill", "white")
 
-svg_map.append("rect")
-    .attr("x", 20)
-    .attr("y", 50)
-    .attr("height", 20)
-    .attr("width", 20)
-    .attr("fill", "brown")
+          // Adding legend to the chloropleth
 
-svg_map.append("rect")
-    .attr("x", 20)
-    .attr("y", 90)
-    .attr("height", 20)
-    .attr("width", 20)
-    .attr("fill", "green")
+            svg_map.append("rect")
+                .attr("x", 20)
+                .attr("y", 50)
+                .attr("height", 20)
+                .attr("width", 20)
+                .attr("fill", "brown")
+
+            svg_map.append("rect")
+                .attr("x", 20)
+                .attr("y", 90)
+                .attr("height", 20)
+                .attr("width", 20)
+                .attr("fill", "green")
 
              svg_map.append("text")
-    .attr("x", 45)
-    .attr("y", 65)
-    .attr("fill", "black")
+                .attr("x", 45)
+                .attr("y", 65)
+                .attr("fill", "black")
                  .text("Does not have clean energy goals")
 
              svg_map.append("text")
-    .attr("x", 45)
-    .attr("y", 105)
-    .attr("fill", "black")
-             .text("Has clean energy goals")
-            })
+                .attr("x", 45)
+                .attr("y", 105)
+                .attr("fill", "black")
+                 .text("Has clean energy goals")
+                        })
      </script>
 </body>
 </html>

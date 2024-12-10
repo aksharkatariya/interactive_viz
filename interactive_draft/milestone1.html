@@ -1,0 +1,211 @@
+<html>
+  <head>
+    <link href="style.css" rel="stylesheet" />
+    <script src="js/d3.v7.js"></script>
+  </head>
+     <style>
+  body {
+    background-color: #fce4c8;
+    font-family: Arial, sans-serif;
+    margin: 10;
+    padding: 10;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: Georgia, serif;
+    color: #333;
+  }
+  #map-info-container {
+    display: flex;
+    flex-direction: row;
+  }
+  #info-box {
+    width: 1800px;
+    margin-left: 20px;
+    padding: 10px;
+    border: 0px solid;
+    background-color: #fce4c8;
+  }
+    </style>
+  <body>
+    <h1>Electricity Sources in U.S.</h1>
+    <p>
+
+The sources of electricity generation in the United States vary widely across states,
+      reflecting differences in geography, natural resource availability,
+      state policies, and market dynamics. Here's an overview of the major energy
+      sources and their distribution across U.S. states:
+      <br>
+    </p>
+    <section>
+      <h2>1.0 - State-wise Distribution</h2>
+      <p>
+        Which state would you like to know more about?        <br />
+      </p>
+
+        <div style="display: flex; flex-direction: row; justify-content: space-between;">
+        <!-- Graph Container -->
+        <div id="graph-container">
+          <div class="svg-output" id="part1_0">
+            <!-- leave this empty, create items with D3 -->
+          </div>
+        </div>
+
+        <!-- Map and Info Box -->
+        <div id="map-info-container" style="width: 400px; margin-left: 20px;">
+          <!-- U.S. Map -->
+          <div id="map-container" style="width: 100%; height: 300px; margin-bottom: 20px;">
+            <!-- Map SVG -->
+          </div>
+
+          <!-- Info Box -->
+          <div id="info-box" style="border: 1px solid #ccc; padding: 10px;">
+            <h3>Deviation from National Average</h3>
+            <p id="info-text">Select a state to see details about its energy sources.</p>
+          </div>
+        </div>
+      </div>
+
+
+
+      <script>
+
+const states = [
+  { state: "Alabama", coal: 33.0, natural_gas: 40.0, nuclear: 22.0, renewables: 5.0 },
+  { state: "Alaska", coal: 10.0, natural_gas: 50.0, nuclear: 0.0, renewables: 40.0 },
+  { state: "Arizona", coal: 25.0, natural_gas: 30.0, nuclear: 35.0, renewables: 10.0 },
+  { state: "Arkansas", coal: 40.0, natural_gas: 30.0, nuclear: 20.0, renewables: 10.0 },
+  { state: "California", coal: 0.0, natural_gas: 40.0, nuclear: 5.0, renewables: 55.0 },
+  { state: "Colorado", coal: 35.0, natural_gas: 30.0, nuclear: 0.0, renewables: 35.0 },
+  { state: "Connecticut", coal: 1.0, natural_gas: 40.0, nuclear: 45.0, renewables: 14.0 },
+  { state: "Delaware", coal: 10.0, natural_gas: 70.0, nuclear: 0.0, renewables: 20.0 },
+  { state: "Florida", coal: 20.0, natural_gas: 60.0, nuclear: 15.0, renewables: 5.0 },
+  { state: "Georgia", coal: 20.0, natural_gas: 40.0, nuclear: 30.0, renewables: 10.0 },
+
+];
+
+
+const width = 500;
+const height = 400;
+const margin = { top: 20, right: 20, bottom: 50, left: 50 };
+
+
+const svg = d3
+  .select("#part1_0")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+
+const dropdown = d3
+  .select("#part1_0")
+  .insert("select", "svg")
+  .attr("id", "stateDropdown")
+  .style("margin-bottom", "20px")
+  .on("change", updateChart);
+
+
+dropdown
+  .selectAll("option")
+  .data(states)
+  .enter()
+  .append("option")
+  .attr("value", d => d.state)
+  .text(d => d.state);
+
+
+const xScale = d3.scaleBand().range([0, width]).padding(0.2);
+const yScale = d3.scaleLinear().range([height, 0]);
+const colorScale = d3
+  .scaleOrdinal()
+  .domain(["Coal", "Natural Gas", "Nuclear", "Renewables"])
+  .range(["#693741", "#3f917a", "#a6b9d4", "#5477a3"]);
+
+
+svg.append("g").attr("class", "x-axis").attr("transform", `translate(0, ${height})`);
+svg.append("g").attr("class", "y-axis");
+
+const nationalAverage = {
+  coal: 20.0,
+  natural_gas: 40.0,
+  nuclear: 20.0,
+  renewables: 20.0
+};
+
+// Update Info Box and Deviation Chart
+function updateChart() {
+  const selectedState = d3.select("#stateDropdown").property("value");
+  const stateData = states.find(s => s.state === selectedState);
+
+  const chartData = [
+    { fuel: "Coal", value: stateData.coal, deviation: stateData.coal - nationalAverage.coal },
+    { fuel: "Natural Gas", value: stateData.natural_gas, deviation: stateData.natural_gas - nationalAverage.natural_gas },
+    { fuel: "Nuclear", value: stateData.nuclear, deviation: stateData.nuclear - nationalAverage.nuclear },
+    { fuel: "Renewables", value: stateData.renewables, deviation: stateData.renewables - nationalAverage.renewables },
+  ];
+
+  xScale.domain(chartData.map(d => d.fuel));
+  yScale.domain([0, 100]);
+
+  svg.select(".x-axis").transition().duration(500).call(d3.axisBottom(xScale));
+  svg.select(".y-axis").transition().duration(500).call(d3.axisLeft(yScale));
+
+  const bars = svg.selectAll(".bar").data(chartData);
+
+  bars
+    .enter()
+    .append("rect")
+    .attr("class", "bar")
+    .attr("x", d => xScale(d.fuel))
+    .attr("y", d => yScale(d.value))
+    .attr("width", xScale.bandwidth())
+    .attr("height", d => height - yScale(d.value))
+    .attr("fill", d => colorScale(d.fuel))
+    .merge(bars)
+    .transition()
+    .duration(500)
+    .attr("x", d => xScale(d.fuel))
+    .attr("y", d => yScale(d.value))
+    .attr("height", d => height - yScale(d.value));
+
+  bars.exit().remove();
+
+  // Update Info Box with Deviation Visualization
+  d3.select("#info-text").html(`
+    <strong>${selectedState}</strong><br>
+    Coal: ${stateData.coal}% (${chartData[0].deviation.toFixed(1)}%)<br>
+    Natural Gas: ${stateData.natural_gas}% (${chartData[1].deviation.toFixed(1)}%)<br>
+    Nuclear: ${stateData.nuclear}% (${chartData[2].deviation.toFixed(1)}%)<br>
+    Renewables: ${stateData.renewables}% (${chartData[3].deviation.toFixed(1)}%)
+  `);
+
+  // Deviation Chart
+  const deviationScale = d3
+    .scaleLinear()
+    .domain([-50, 50])
+    .range([0, 200]); // Width for deviation bars
+
+  const deviationBars = d3.select("#info-box").selectAll(".deviation-bar").data(chartData);
+
+  deviationBars
+  .enter()
+  .append("div")
+  .attr("class", "deviation-bar")
+  .style("height", "25px")
+  .style("margin", "5px 0")
+  .style("position", "relative")
+  .style("background", "#8B9E6B")
+  .merge(deviationBars)
+  .style("width", d => `${Math.abs(deviationScale(d.deviation))}px`)
+  .style("left", d => (d.deviation < 0 ? `calc(50% - ${Math.abs(deviationScale(d.deviation))}px)` : "50%"))
+  .text(d => `${d.fuel}`);
+deviationBars.exit().remove();
+}
+
+updateChart();
+</script>
+
+    </section>
+  </body>
+</html>
