@@ -1,56 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 20px;
+        html, body {
+        height: 100%;
+        overflow-x: hidden;
     }
-    #state-select {
-        margin-bottom: 20px;
-        padding: 5px;
-    }
-    .container {
-        display: flex;
-        flex-wrap: wrap;
-    }
-    .first-content {
-        display: flex;
-        width: 100%;
-        height: 50%;
-        margin-bottom: 20px;
-    }
-    #d3-container, #d3-container_text, #d3-container_compare {
-        position: relative;
-        border: 2px dotted #000;
-        padding: 10px;
-        box-sizing: border-box;
-    }
-    #d3-container {
-        width: 50%;
-    }
-    #d3-container_text {
-        width: 15%;
-    }
-    #d3-container_compare {
-        width: 35%;
-    }
-    .container-header {
-        position: absolute;
-        top: -20px;
-        left: 10px;
-        background: white;
-        padding: 0 5px;
-        font-weight: bold;
-    }
-    #d3-container2 {
-        width: 100%;
-        height: 400px;
-        border: 2px dotted #000;
-        padding: 10px;
-        box-sizing: border-box;
-    }
-</style>
+        body {
+            font-family: Georgia, serif;
+            margin: 0;
+            padding: 20px;
+
+            background-color: #f5f5dc; /* Light beige background */
+
+        }
+        #state-select-container {
+            margin-bottom: 20px;
+        }
+        #state-select {
+            margin-top: 10px;
+            padding: 5px;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .first-content {
+            display: flex;
+            width: 100%;
+            height: 300px;
+            margin-bottom: 10px;
+        }
+        #d3-container {
+            width: 50%;
+            padding: 10px;
+            box-sizing: border-box;
+            height: 90px;
+        }
+        #d3-container_text {
+            width: 18%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        #d3-container_compare {
+            width: 32%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        #d3-container_goal {
+            width: 32%;
+            padding: 10px;
+            box-sizing: border-box;
+            height: 160px
+        }
+
+        #d3-container2 {
+            width: 50%;
+            height: 400px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .second-content {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 20px; /* Optional: Adds space between the two divs */
+        }
+
+        #d3-container2, #d3-container_map {
+            width: 50%;
+            height: 400px;
+            border: 2px dotted #000;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .container-header {
+            font-size: 20px; /* Increased font size */
+            font-weight: bold; /* Made the header bold */
+        }
+
+        #header {
+            font-size: 24px; /* Larger font size for the main header */
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .container-header {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        #header {
+            font-size: 26px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .container-header-centre {
+    text-align: right;
+    font-size: 20px;
+    padding: 2px;
+    box-sizing: border-box;
+            font-weight: bold;
+}
+
+    </style>
 <head>
     <meta charset="UTF-8">
     <title>State Energy Sources</title>
@@ -59,8 +112,14 @@
     <script src="https://d3js.org/topojson.v2.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="/path/to/textwrap.js"></script>
 </head>
 <body>
+
+
+<div id="header">Which state are you from?</div>
+
     <select id="state-select">
         <option value="">Select a State</option>
     </select>
@@ -69,111 +128,157 @@
             <div class="container-header">Energy Mix</div>
         </div>
         <div id="d3-container_text">
-            <div class="container-header">Energy Percentages</div>
+            <div class="container-header">Energy %</div>
         </div>
         <div id="d3-container_compare">
             <div class="container-header">Comparison to National Average</div>
         </div>
     </div>
 
-    <div id="d3-container2"></div>
 
-    <script>
-        const national_average = [
-            {"coal": 16.2, "natural gas": 43.1, "nuclear": 22.0, "petroleum": 0.4, "wind":
-            10.2, "solar": 3.9, "hydro": 5.7, "biomass": 1.1, "geothermal": 0.4}];
+    <div id="d3-container_goal">
+        <div class="container-header"> Clean Energy Goals</div>
+    </div>
+
+     <div id="d3-container2">
+        <div class="container-header"> Did you know only 24 states have clean energy goals? Click to find out which ones</div>
+    </div>
+
+<div id="data-source-container" style="margin-top: 20px;">
+    <strong>Data Source:</strong>
+    <a href="https://www.example.com" target="_blank">Example Source 1</a>
+    <span> | </span>
+    <a href="https://www.another-example.com" target="_blank">Example Source 2</a>
+</div>
+     <script>
+
+         const national_average = [
+             {"coal": 16.2, "natural gas": 43.1, "nuclear": 22.0, "petroleum": 0.4, "wind":
+             10.2, "solar": 3.9, "hydro": 5.7, "biomass": 1.1, "geothermal": 0.4}];
 
         const states = [
-            {
-                "state": "Virginia (United States)",
-                "nuclear": 30.3,
-                "coal": 3.3,
-                "natural gas": 57.4,
-                "petroleum": 0.3,
-                "hydro": 0.8,
-                "geothermal": 0,
-                "solar": 3.6,
-                "wind": 0.1,
-                "biomass": 4.2,
-                "goal": "100% carbon-free electricity by 2045 for Dominion Energy and 2050 for Appalachian Power Company",
-                "comment": "The 2020 Virginia Clean Economy Act (House Bill 1526andSenate Bill 851) requires zero-carbon utilities by 2050 at the latest."
-            },
-            {
-                "state": "Washington (United States)",
-                "nuclear": 7.8,
-                "coal": 2.9,
-                "natural gas": 14.4,
-                "petroleum": 0,
-                "hydro": 64.6,
-                "geothermal": 0,
-                "solar": 0,
-                "wind": 8.7,
-                "biomass": 1.6,
-                "goal": "100% zero-emissions electricity by 2045",
-                "comment": "2019's Clean Energy Transformation Act (SB5116) applies to all utilities. The state Commerce Department started a rulemaking process in August 2019. Utilities must file implementation plans by January 2022."
-            },
-            {
-                "state": "West Virginia (United States)",
-                "nuclear": 0,
-                "coal": 90.8,
-                "natural gas": 4.1,
-                "petroleum": 0.3,
-                "hydro": 2.3,
-                "geothermal": 0,
-                "solar": 0,
-                "wind": 2.5,
-                "biomass": 0.1,
-                "goal": "NA",
-                "comment": "NA"
-            },
-            {
-                "state": "Wisconsin (United States)",
-                "nuclear": 15.2,
-                "coal": 41.9,
-                "natural gas": 33.9,
-                "petroleum": 0.3,
-                "hydro": 3.8,
-                "geothermal": 0,
-                "solar": 0.6,
-                "wind": 2.5,
-                "biomass": 1.8,
-                "goal": "100% carbon-free electricity by 2050",
-                "comment": "Governor Tony Evers' Executive Order (EO38) in 2019 directed a new Office of Sustainability and Clean Energy to "achieve a goal" of all carbon-free power by 2050."
-            },
-            {
-                "state": "Wyoming (United States)",
-                "nuclear": 0,
-                "coal": 73.3,
-                "natural gas": 3.5,
-                "petroleum": 0.1,
-                "hydro": 2.3,
-                "geothermal": 0,
-                "solar": 0.4,
-                "wind": 19.4,
-                "biomass": 1,
-                "goal": "NA",
-                "comment": "NA"
-            }
-        ];
+  {
+    "state": "Alabama (United States)",
+    "nuclear": 32.2,
+    "coal": 18.8,
+    "natural gas": 37.6,
+    "petroleum": 0,
+    "hydro": 8.8,
+    "geothermal": 0,
+    "solar": 0.3,
+    "wind": 0,
+    "biomass": 2.2,
+    "goal": "NA",
+    "comment": "NA"
+  },
+  {
+    "state": "Alaska (United States)",
+    "nuclear": 0,
+    "coal": 13.7,
+    "natural gas": 41,
+    "petroleum": 14.9,
+    "hydro": 27.7,
+    "geothermal": 0,
+    "solar": 0,
+    "wind": 2.1,
+    "biomass": 0.6,
+    "goal": "NA",
+    "comment": "NA"
+  },
+  {
+    "state": "Arizona (United States)",
+    "nuclear": 29.1,
+    "coal": 13.2,
+    "natural gas": 44.4,
+    "petroleum": 0,
+    "hydro": 5.4,
+    "geothermal": 0,
+    "solar": 6.2,
+    "wind": 1.5,
+    "biomass": 0.2,
+    "goal": "NA",
+    "comment": "NA"
+  },
+  {
+    "state": "Arkansas (United States)",
+    "nuclear": 22.5,
+    "coal": 35.6,
+    "natural gas": 32.1,
+    "petroleum": 0.1,
+    "hydro": 7.3,
+    "geothermal": 0,
+    "solar": 0.8,
+    "wind": 0,
+    "biomass": 1.7,
+    "goal": "NA",
+    "comment": "NA"
+  },
+  {
+    "state": "California (United States)",
+    "nuclear": 8.4,
+    "coal": 0.1,
+    "natural gas": 49,
+    "petroleum": 0,
+    "hydro": 7.2,
+    "geothermal": 5.8,
+    "solar": 17.4,
+    "wind": 7.9,
+    "biomass": 4,
+    "goal": "100% carbon-free electricity by 2045",
+    "comment": "2018 legislation (SB 100) extended and expanded the existing state RPS. State agencies are required to submit implementation plans by January 1, 2021. Also in 2018, Gov. Jerry Brown�sExecutive Order B-55-18set a goal of statewide carbon neutrality by no later than 2045, with net negative GHG emissions thereafter."
+  },
+  {
+    "state": "Colorado (United States)",
+    "nuclear": 0,
+    "coal": 41.6,
+    "natural gas": 25.5,
+    "petroleum": 0,
+    "hydro": 2.8,
+    "geothermal": 0,
+    "solar": 3.1,
+    "wind": 26.5,
+    "biomass": 0.4,
+    "goal": "100% carbon-free electricity by 2050 for Xcel Energy",
+    "comment": "A 2019 law (SB 19-236) codified a pledge previously made by Xcel, whose service territory covers approximately 60% of the state�s load. It is mandatory “so long as it is technically and economically feasible.”"
+  },
+  {
+    "state": "Connecticut (United States)",
+    "nuclear": 39,
+    "coal": 0.6,
+    "natural gas": 55.6,
+    "petroleum": 0.2,
+    "hydro": 0.7,
+    "geothermal": 0,
+    "solar": 0.7,
+    "wind": 0,
+    "biomass": 3.2,
+    "goal": "100% carbon-free electricity by 2040",
+    "comment": "Governor Ned Lamont�s 2019 Executive Order (Number 3) set a 2040 goal for carbon-free electricity and asked the Department of Energy and Environmental Protection to develop a decarbonization plan for the power sector, in line with previous legislation to cut economy-wide carbon emissions by 80% below 2001 levels by 2050. In May 2022, Senate Bill 10,An Act Concerning Climate Change Mitigation, placed the goal into law."
+  }
+]
+         const stateSelect = d3.select("#state-select");
+         const container = d3.select("#d3-container");
 
-        const stateSelect = d3.select("#state-select");
-        const container = d3.select("#d3-container");
-        const map_container = d3.select("#d3-container2");
-        const text_container = d3.select("#d3-container_text");
-        const compare_container = d3.select("#d3-container_compare");
+         const text_container = d3.select("#d3-container_text");
+         const compare_container = d3.select("#d3-container_compare");
 
-        // Populate dropdown
-        stateSelect.selectAll("option.state")
-            .data(states)
-            .enter()
-            .append("option")
-            .attr("value", d => d.state)
-            .attr("class", "state")
-            .text(d => d.state);
+         const map_container = d3.select("#d3-container_map");
 
-        const totalWidth = 600;
+         const goal_container = d3.select("#d3-container_goal");
 
-        const colors = {
+
+         // Populate dropdown
+         stateSelect.selectAll("option.state")
+             .data(states)
+             .enter()
+             .append("option")
+             .attr("value", d => d.state)
+             .attr("class", "state")
+             .text(d => d.state);
+
+         const totalWidth = 600;
+
+                const colors = {
             nuclear: "#4169E1",
             coal: "#8B4513",
             natural_gas: "#3CB371",
@@ -184,42 +289,87 @@
             wind: "#87CEEB",
             biomass: "#228B22"
         };
-        const svg_stackbar = container.append("svg")
-            .attr("width", totalWidth)
-            .attr("height", 300)
-            .style("display", "none");
+         const svg_stackbar = container.append("svg")
+             .attr("width", totalWidth)
+             .attr("height", 300)
+             .style("display", "none");
 
-        const svg_text = text_container.append("svg")
-            .attr("width", 300)
-            .attr("height", 300);
+         const svg_text = text_container.append("svg")
+             .attr("width", 300)
+             .attr("height", 300);
 
-        const svg_diff = compare_container.append("svg")
-            .attr("width", 300)
-            .attr("height", 300);
+         const svg_diff = compare_container.append("svg")
+             .attr("width", 400)
+             .attr("height", 30)
+         const svg_goal = goal_container.append("svg")
+             .attr("width", 1000)
+             .attr("height", 200);
 
-        const svg_map = map_container.append("svg")
-            .attr("width", 1000)
-            .attr("height", 1000);
-
-        // Dropdown change for rect
-        stateSelect.on("change", function () {
-            // Clearing previous visualization
-            svg_stackbar.selectAll("rect").remove();
-            svg_text.selectAll("text").remove();
-            svg_diff.selectAll("rect").remove();
-            const selectedState = this.value;
-            if (!selectedState) {
-                svg_stackbar.style("display", "none");
-                svg_text.style("display", "none");
-                svg_diff.style("display", "none");
-                return;
+function wrap(text, width) {
+    text.each(function() {
+        const textElement = d3.select(this);
+        const words = textElement.text().split(/\s+/).reverse();
+        let word,
+            line = [],
+            lineNumber = 0,
+            lineHeight = 1.1, // ems
+            y = textElement.attr("y"),
+            dy = parseFloat(textElement.attr("dy")) || 0,
+            tspan = textElement.text(null)
+                .append("tspan")
+                .attr("x", textElement.attr("x"))
+                .attr("y", y)
+                .attr("dy", `${dy}em`);
+        while ((word = words.pop())) {
+            line.push(word);
+            tspan.text(line.join(" "));
+            if (tspan.node().getComputedTextLength() > width) {
+                line.pop();
+                tspan.text(line.join(" "));
+                line = [word];
+                tspan = textElement.append("tspan")
+                    .attr("x", textElement.attr("x"))
+                    .attr("y", y)
+                    .attr("dy", `${++lineNumber * lineHeight + dy}em`)
+                    .text(word);
             }
-            const state = states.find(s => s.state === selectedState);
+        }
+    });
+}
+
+
+         // Dropdown change for rect
+         stateSelect.on("change", function () {
+             // Clearing previous visualization
+             svg_stackbar.selectAll("rect").remove();
+             svg_text.selectAll("text").remove();
+             svg_diff.selectAll("rect").remove();
+             svg_goal_text.selectAll("text").remove();
+
+             svg_diff.selectAll("text").remove();
+             svg_goal.selectAll("text").remove();
+             const selectedState = this.value;
+             if (!selectedState) {
+                   svg_stackbar.style("display", "none");
+                  svg_text.style("display", "none");
+                  svg_diff.style("display", "none");
+                  svg_goal_text.style("display", "none");
+
+                  svg_goal.style("display", "none");
+
+                 return;
+             }
+             const state = states.find(s => s.state === selectedState);
             svg_stackbar.style("display", "block");
             svg_text.style("display", "block");
             svg_diff.style("display", "block");
 
-            svg_diff.append("line")
+            svg_goal_text.style("display", "block");
+
+            svg_goal.style("display", "block");
+
+
+           svg_diff.append("line")
                 .attr("x1", totalWidth/1.2)
                 .attr("y1", 0)
                 .attr("x2", totalWidth/1.2)
@@ -227,701 +377,238 @@
                 .attr("stroke", "gray")
                 .attr("stroke-dasharray", "5,5");
 
-            let trialX = 0;
-            let text_gap = 24;
+             let trialX = 0;
+             let text_gap = 24;
             const energySources = Object.keys(state).filter(key =>
-                key !== 'state' && key !== 'goal' && key !== 'comment'
-            );
+                    key !== 'state' && key !== 'goal' && key !== 'comment'
+                );
 
             energySources.forEach(source => {
-                const rectWidth = (state[source] / 100) * totalWidth;
-                svg_stackbar.append("rect")
-                    .attr("x", trialX)
-                    .attr("y", 10)
-                    .attr("width", rectWidth)
-                    .attr("height", 280)
-                    .attr("fill", colors[source]);
 
-                svg_text.append("text")
-                    .attr("x", 10)
-                    .attr("y", text_gap)
-                    .text(`- ${source}: ${state[source]}%`)
-                    .style("fill", colors[source])
-                    .style("font-size", "20px")
-                    .style("font-family", "Roboto");
+                     const rectWidth = (state[source] / 100) * totalWidth;
+                    // console.log(rectWidth);
+                     svg_stackbar.append("rect")
+                         .attr("x", trialX)
+                         .attr("y", 10)
+                         .attr("width", rectWidth)
+                         .attr("height", 244)
+                         .attr("fill", colors[source])
+                         .attr("opacity", 0.8);
+                         .attr("width", 0)
+                         .attr("height", 245)
+                         .attr("fill", colors[source])
+                         .attr("opacity", 0.8)
+                         .transition()
+                         .duration(600)
+                         .attr("width", rectWidth);
 
-                const nationalAvgValue = national_average[0][source];
+                     svg_text.append("text")
+                         .attr("x", 15)
+                         .attr("y", text_gap)
+                         .text("")
+                         .style("fill", colors[source])
+                         .style("font-size", "18px")
+                         .style("font-family", "Arial");
+                         .style("font-size", "20px")
+                         .style("font-family", "Arial")
+                         .transition()
+                         .duration(600)
+                         .text(`- ${source.charAt(0).toUpperCase() + source.slice(1)}: ${state[source]}%`);
+
+
+                      const nationalAvgValue = national_average[0][source];
                 const difference = state[source] - nationalAvgValue;
                 const diffRectWidth = Math.abs(difference / 100) * totalWidth;
 
-                svg_diff.append("rect")
-                    .attr("fill", colors[source])
-                    .attr("width", Math.abs(difference)*6)
-                    .attr("height", 20)
-                    .attr("y", text_gap - 16)
-                    .attr("x", 400 / 2 + Math.min(0, difference)*6)
-                    .attr("opacity", 0.5);
 
-                trialX += rectWidth;
-                text_gap += 28;
+                     svg_diff.append("rect")
+                        .attr("fill", colors[source])
+                        .attr("height", 20)
+                         .attr("width", 0)
+                        .attr("y", text_gap - 16)
+                        .attr("x", 400 / 2 + Math.min(0, difference)*6)
+                        .attr("opacity", 0.8);
+
+
+                         .transition()
+                        .duration(600)
+                        .attr("opacity", 0.6)
+                         .attr("width", Math.abs(difference)*6);
+
+
+                    const difference_round = difference.toFixed(1);
+                     svg_diff.append("text")
+                        .attr("fill", "black")
+                        .attr("y", text_gap - 6)
+                        .attr("x", 350)
+                         .text("")
+                         .transition()
+                        .duration(600)
+                        .attr("opacity", 1)
+                         .text(`${difference_round}`)
+                     .style("font-family", "Arial");
+
+                     trialX += rectWidth;
+                     text_gap += 28;
+                 });
+
+    svg_goal_text.append("text")
+        .attr("x", 10)
+        .attr("y", 60)
+        .text(`Goal: ${state.goal}`)
+        .style("font-size", "18px")
+        .style("font-family", "Arial")
+        .style("fill", "black")
+        .call(wrap, 400);
+
+    svg_goal_text.append("text")
+        .attr("x", 10)
+        .attr("y", 110)
+        .text(`Comment: ${state.comment}`)
+        .style("font-size", "15px")
+        .style("font-family", "Arial")
+        .style("fill", "black")
+        .call(wrap, 400);
+
+});
+
+/// MAP ///
+const svg_map = map_container.append("svg")
+     .attr("width", 1000)
+     .attr("height", 1000);
+
+            svg_goal.append("text")
+        .attr("x", 220)
+        .attr("y", 22)
+        .text("")
+        .style("font-size", "18px")
+        .style("font-family", "Arial")
+        .style("fill", "black")
+                .transition()
+                .duration(600)
+                .text(`Goal: ${state.goal}`)
+                .call(wrap, 300);
+
+    svg_goal.append("text")
+        .attr("x", 220)
+        .attr("y", 50)
+        .text("")
+        .style("font-size", "15px")
+        .style("font-family", "Arial")
+        .style("fill", "black")
+        .transition()
+        .duration(600)
+        .on("end", function() {
+        d3.select(this)
+            .text(`Comment: ${state.comment}`)
+            .call(wrap, 770);
             });
-        });
 
-        // MAP ////////////////////////////////////////////////////////////
-        var projection = d3.geoMercator()
-            .scale(300)
-            .translate([800, 400]);
+});
 
-        d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/us_states_hexgrid.geojson.json", function (data) {
-            svg_map.append("g")
-                .selectAll("path")
-                .data(data.features)
-                .enter()
-                .append("path")
-                .attr("fill", d => {
-                    const stateData = states.find(s => s.state === d.properties.google_name);
-                    if (!stateData) return "#ccc";
-                    return stateData.goal === "NA" ? "green" : "brown";
-                })
-                .attr("d", d3.geoPath().projection(projection))
-                .attr("stroke", "black")
-                .attr("fill-opacity", 0)
-                .on("click", function(event, d){
-                    d3.select(this).attr("fill-opacity", 1);
-                });
+
+
+var projection = d3.geoMercator()
+    .scale(100)
+    .translate([100, 140]);
+
+d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/us_states_hexgrid.geojson.json", function (data) {
+    console.log(data);
+    svg_map.append("g")
+        .selectAll("path")
+        .data(data.features)
+        .enter()
+        .append("path")
+        .attr("fill", d => {
+            const stateData = states.find(s => s.state === d.properties.google_name);
+            if (!stateData) return "#ccc";
+            return stateData.goal === "NA" ? "green" : "brown";
+        })
+        .attr("d", d3.geoPath().projection(projection))
+        .attr("stroke", "black")
+        .attr("fill-opacity", 1) // Set opacity to 1 to ensure visibility initially
+        .on("click", function (event, d) {
+            d3.select(this).attr("fill-opacity", 1); // Toggle fill-opacity on click
         });
-    </script>
+});
+
+
+
+
+// MAP ////////////////////////////////////////////////////////////
+
+            //console.log("Rendering");
+         // Map and projection
+         var projection = d3.geoMercator()
+             .scale(300) // This is the zoom
+             .translate([1100, 400]); // You have to play with these values to center your map
+         // Load external data and boot
+         d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/us_states_hexgrid.geojson.json", function (data) {
+
+             var path = d3.geoPath()
+    .projection(projection)
+
+svg_map.append("g")
+    .selectAll("path")
+    .data(data.features)
+    .enter()
+    .append("path")
+    .attr("fill", d => {
+        const stateData = states.find(s => s.state === d.properties.google_name);
+        if (!stateData) return "#ccc";
+        return stateData.goal === "NA" ? "brown" : "green";
+    })
+    .attr("d", d3.geoPath().projection(projection))
+    .attr("stroke", "black")
+    .attr("fill-opacity", 0)
+    .on("click", function(event, d){
+        d3.select(this).attr("fill-opacity", 1);
+    });
+  svg_map.append("g")
+      .selectAll("labels")
+      .data(data.features)
+      .enter()
+      .append("text")
+        .attr("x", function(d){return path.centroid(d)[0]})
+        .attr("y", function(d){return path.centroid(d)[1]})
+        .text(function(d){ return d.properties.iso3166_2})
+        .attr("text-anchor", "middle")
+        .attr("alignment-baseline", "central")
+        .style("font-size", 9)
+        .style("fill", "white")
+
+svg_map.append("rect")
+    .attr("x", 20)
+    .attr("y", 50)
+    .attr("height", 20)
+    .attr("width", 20)
+    .attr("fill", "brown")
+
+svg_map.append("rect")
+    .attr("x", 20)
+    .attr("y", 90)
+    .attr("height", 20)
+    .attr("width", 20)
+    .attr("fill", "green")
+
+             svg_map.append("text")
+    .attr("x", 45)
+    .attr("y", 65)
+    .attr("fill", "black")
+                 .text("Does not have clean energy goals")
+
+             svg_map.append("text")
+    .attr("x", 45)
+    .attr("y", 105)
+    .attr("fill", "black")
+             .text("Has clean energy goals")
+            })
+
+     </script>
 </body>
 </html>
 
-,
-  {
-    "state": "Delaware (United States)",
-    "nuclear": 0,
-    "coal": 6.8,
-    "natural gas": 85.8,
-    "petroleum": 0.5,
-    "hydro": 0,
-    "geothermal": 0,
-    "solar": 1.5,
-    "wind": 0.1,
-    "biomass": 5.3,
-    "goal": "100% reduction in GHG emissions",
-    "comment": "HB 99, signed by Gov. John Carney in August 2023, requires Delaware to reduce state-wide GHG emissions by 50% from 2005 levels by 2030 and 100% by 2050."
-  },
-  {
-    "state": "District of Columbia (United States)",
-    "nuclear": 0,
-    "coal": 0,
-    "natural gas": 62.5,
-    "petroleum": 0,
-    "hydro": 0,
-    "geothermal": 0,
-    "solar": 11.9,
-    "wind": 0,
-    "biomass": 25.5,
-    "goal": "100% renewable energy by 2032 through the RPS",
-    "comment": "The Clean Energy DC Omnibus Amendment Act of 2018 (DC Act 22-583) amended the existing RPS to mandate 100% renewable electricity by the year 2032."
-  },
-  {
-    "state": "Florida",
-    "nuclear": 11.5,
-    "coal": 7.5,
-    "natural gas": 73.9,
-    "petroleum": 0.5,
-    "hydro": 0.1,
-    "geothermal": 0,
-    "solar": 3.7,
-    "wind": 0,
-    "biomass": 2.8,
-    "goal": "NA",
-    "comment": "NA"
-  },
-  {
-    "state": "Georgia (United States)",
-    "nuclear": 26.8,
-    "coal": 15.1,
-    "natural gas": 46.3,
-    "petroleum": 0.2,
-    "hydro": 3.2,
-    "geothermal": 0,
-    "solar": 3.8,
-    "wind": 0,
-    "biomass": 4.6,
-    "goal": "NA",
-    "comment": "NA"
-  },
-  {
-    "state": "Hawaii (United States)",
-    "nuclear": 0,
-    "coal": 11.8,
-    "natural gas": 0,
-    "petroleum": 65.4,
-    "hydro": 1.2,
-    "geothermal": 1.8,
-    "solar": 5.7,
-    "wind": 7.3,
-    "biomass": 6.8,
-    "goal": "100% renewable energy by 2045 through the RPS",
-    "comment": "2015 legislation (HB623) made Hawaii the first state to set a 100% RPS for the electricity sector."
-  },
-  {
-    "state": "Idaho (United States)",
-    "nuclear": 0,
-    "coal": 0.1,
-    "natural gas": 26,
-    "petroleum": 0,
-    "hydro": 51,
-    "geothermal": 0.5,
-    "solar": 3.3,
-    "wind": 15.7,
-    "biomass": 3.3,
-    "goal": "NA",
-    "comment": "NA"
-  },
-  {
-    "state": "Illinois (United States)",
-    "nuclear": 53.3,
-    "coal": 23.9,
-    "natural gas": 11.6,
-    "petroleum": 0,
-    "hydro": 0.1,
-    "geothermal": 0,
-    "solar": 0.3,
-    "wind": 10.3,
-    "biomass": 0.5,
-    "goal": "100% clean energy by 2050",
-    "comment": "2021 legislation (SB2408) established a goal of 100% clean energy by 2050, with interim targets of 40% by 2030 and 50% by 2040."
-  },
-  {
-    "state": "Indiana (United States)",
-    "nuclear": 0,
-    "coal": 57.7,
-    "natural gas": 29.5,
-    "petroleum": 0.1,
-    "hydro": 0.3,
-    "geothermal": 0,
-    "solar": 0.7,
-    "wind": 8.4,
-    "biomass": 3.3,
-    "goal": "NA",
-    "comment": "NA"
-  },
-  {
-    "state": "Iowa (United States)",
-    "nuclear": 0,
-    "coal": 33.5,
-    "natural gas": 9,
-    "petroleum": 0.1,
-    "hydro": 1.4,
-    "geothermal": 0,
-    "solar": 0.3,
-    "wind": 55.3,
-    "biomass": 0.3,
-    "goal": "NA",
-    "comment": "NA"
-  },
-  {
-    "state": "Kansas (United States)",
-    "nuclear": 15.1,
-    "coal": 34.2,
-    "natural gas": 5.1,
-    "petroleum": 0.2,
-    "hydro": 0.1,
-    "geothermal": 0,
-    "solar": 0.1,
-    "wind": 45.2,
-    "biomass": 0.1,
-    "goal": "NA",
-    "comment": "NA"
-  },
-  {
-    "state": "Kentucky (United States)",
-    "nuclear": 0,
-    "coal": 70.7,
-    "natural gas": 21,
-    "petroleum": 0.1,
-    "hydro": 7.5,
-    "geothermal": 0,
-    "solar": 0.1,
-    "wind": 0,
-    "biomass": 0.6,
-    "goal": "NA",
-    "comment": "NA"
-  },
-  {
-    "state": "Louisiana (United States)",
-    "nuclear": 17.6,
-    "coal": 8,
-    "natural gas": 64.8,
-    "petroleum": 4,
-    "hydro": 1.2,
-    "geothermal": 0,
-    "solar": 0.2,
-    "wind": 0,
-    "biomass": 4.2,
-    "goal": "Net zero greenhouse gas emissions by 2050",
-    "comment": "Governor John Bel Edwards� 2020 Executive Order (JBE 2020-18) established a Climate Initiatives Task Force to develop a roadmap and make recommendations."
-  },
-  {
-    "state": "Maine (United States)",
-    "nuclear": 0,
-    "coal": 0.6,
-    "natural gas": 24.7,
-    "petroleum": 0.4,
-    "hydro": 27.1,
-    "geothermal": 0,
-    "solar": 1.6,
-    "wind": 23.3,
-    "biomass": 22.3,
-    "goal": "100% clean energy by 2050",
-    "comment": "2019 legislation (LD 1494) increased Maine�s RPS to 80% by 2030, and set a goal of 100% by 2050. AlsoLD1679sets an economy-wide goal of 80% cuts to greenhouse gases by 2050."
-  },
-  {
-    "state": "Maryland (United States)",
-    "nuclear": 37.7,
-    "coal": 14.7,
-    "natural gas": 37.1,
-    "petroleum": 0.2,
-    "hydro": 5.3,
-    "geothermal": 0,
-    "solar": 1.7,
-    "wind": 1.3,
-    "biomass": 1.9,
-    "goal": "Net-zero greenhouse gas emissions by 2045",
-    "comment": "The General Assembly enacted theClimate Solutions Now Act of 2022. This wide-ranging legislation includes the 2045 net-zero goal."
-  },
-  {
-    "state": "Massachusetts (United States)",
-    "nuclear": 0,
-    "coal": 0,
-    "natural gas": 76.9,
-    "petroleum": 0.4,
-    "hydro": 2,
-    "geothermal": 0,
-    "solar": 9.2,
-    "wind": 1.1,
-    "biomass": 10.3,
-    "goal": "Net-zero greenhouse gas emissions by 2050",
-    "comment": "In 2020, the Secretary of Energy and Environmental Affairs set a 2050 net-zero GHG emissions goal under the authority of 2008 legislation. The same goal was then included in a March 2021 climate action law (Bill S.9). A decarbonization roadmap was released at the end of 2020."
-  },
-  {
-    "state": "Michigan (United States)",
-    "nuclear": 29.6,
-    "coal": 31.9,
-    "natural gas": 26.6,
-    "petroleum": 1,
-    "hydro": 0.7,
-    "geothermal": 0,
-    "solar": 0.4,
-    "wind": 6.7,
-    "biomass": 3.1,
-    "goal": "100% carbon-free electricity by 2040",
-    "comment": "Senate Bill 271 (2023) requires all utilities to have a portfolio of 60% renewable energy by 2035, and 80% \"clean energy\"�which includes carbon capture and storage�by 2035 and 100% by 2040."
-  },
-  {
-    "state": "Minnesota (United States)",
-    "nuclear": 23.7,
-    "coal": 26.5,
-    "natural gas": 20.6,
-    "petroleum": 0.1,
-    "hydro": 1.5,
-    "geothermal": 0,
-    "solar": 3.2,
-    "wind": 21.7,
-    "biomass": 2.7,
-    "goal": "100% carbon-free electricity by 2040",
-    "comment": "2023 legislation (SF 4) requires electric utilities to get 100% of the electricity they sell from carbon-free sources by 2040, including renewables and nuclear power. There are interim targets of 80% carbon-free power in 2030 and 90% in 2035. The legislation also increases the state�s Renewable Energy Standard to 55% by 2035."
-  },
-  {
-    "state": "Mississippi (United States)",
-    "nuclear": 17.1,
-    "coal": 8,
-    "natural gas": 72.1,
-    "petroleum": 0,
-    "hydro": 0,
-    "geothermal": 0,
-    "solar": 0.6,
-    "wind": 0,
-    "biomass": 2.1,
-    "goal": "NA",
-    "comment": "NA"
-  },
-  {
-    "state": "Missouri (United States)",
-    "nuclear": 5.5,
-    "coal": 74.4,
-    "natural gas": 8.7,
-    "petroleum": 0.2,
-    "hydro": 2.4,
-    "geothermal": 0,
-    "solar": 0.2,
-    "wind": 8.5,
-    "biomass": 0.2,
-    "goal": "NA",
-    "comment": "NA"
-  },
-  {
-    "state": "Montana (United States)",
-    "nuclear": 0,
-    "coal": 43.2,
-    "natural gas": 2,
-    "petroleum": 1.8,
-    "hydro": 40,
-    "geothermal": 0,
-    "solar": 0.1,
-    "wind": 11.5,
-    "biomass": 1.3,
-    "goal": "NA",
-    "comment": "NA"
-  },
-  {
-    "state": "Nebraska (United States)",
-    "nuclear": 17.8,
-    "coal": 49.2,
-    "natural gas": 4.1,
-    "petroleum": 0.1,
-    "hydro": 3.3,
-    "geothermal": 0,
-    "solar": 0.1,
-    "wind": 25.2,
-    "biomass": 0.2,
-    "goal": "Net-zero carbon emissions from generation resources by 2050 for Nebraska Public Power District and Omaha Public Power District; 2040 for Lincoln Electric System",
-    "comment": "Nebraska is the only state served solely by publicly owned utilities. As of December 2021, the three public utilities that serve the vast majority of customers have all adopted 100% clean energy goals."
-  },
-  {
-    "state": "Nevada (United States)",
-    "nuclear": 0,
-    "coal": 6.6,
-    "natural gas": 62.5,
-    "petroleum": 0,
-    "hydro": 4.7,
-    "geothermal": 9.4,
-    "solar": 15.9,
-    "wind": 0.8,
-    "biomass": 0.2,
-    "goal": "100% carbon-free electricity by 2050",
-    "comment": "2019 legislation (SB 358) raised the RPS to 50% by 2030, and set a goal of a net-zero emission power sector by 2050."
-  },
-  {
-    "state": "New Hampshire",
-    "nuclear": 56.5,
-    "coal": 1.6,
-    "natural gas": 25.6,
-    "petroleum": 0.4,
-    "hydro": 6.7,
-    "geothermal": 0,
-    "solar": 0,
-    "wind": 2.9,
-    "biomass": 6.2,
-    "goal": "NA",
-    "comment": "NA"
-  },
-  {
-    "state": "New Jersey (United States)",
-    "nuclear": 45.8,
-    "coal": 1.7,
-    "natural gas": 47.8,
-    "petroleum": 0.1,
-    "hydro": 0,
-    "geothermal": 0,
-    "solar": 2.5,
-    "wind": 0,
-    "biomass": 2.3,
-    "goal": "100% carbon-free electricity by 2035",
-    "comment": "Governor Phil Murphy�s Executive Order 315 in 2023 set a goal of ensuring 100% of energy sold in the state comes from clean sources by 2035 and directed BPU to develop an updated Energy Master Plan by 2024."
-  },
-  {
-    "state": "New Mexico (United States)",
-    "nuclear": 0,
-    "coal": 35.5,
-    "natural gas": 28.4,
-    "petroleum": 0.1,
-    "hydro": 0.5,
-    "geothermal": 0.1,
-    "solar": 5,
-    "wind": 30.2,
-    "biomass": 0.1,
-    "goal": "100% carbon-free electricity by 2045",
-    "comment": "2019 legislation (SB 489) requires utilities to have a zero-carbon power supply by 2045, including at least 80% from renewables, with the exception of rural electric coops which have a 2050 target date."
-  },
-  {
-    "state": "New York (United States)",
-    "nuclear": 24.9,
-    "coal": 0,
-    "natural gas": 45.6,
-    "petroleum": 0.7,
-    "hydro": 22,
-    "geothermal": 0,
-    "solar": 1,
-    "wind": 3.5,
-    "biomass": 2.3,
-    "goal": "100% carbon-free electricity by 2040",
-    "comment": "2019 legislation (S6599) requires zero-emissions electricity by 2040 and sets a goal of cutting all state GHGs 85% by 2050. A Climate Action Council will develop a plan."
-  },
-  {
-    "state": "North Carolina (United States)",
-    "nuclear": 32.8,
-    "coal": 15.5,
-    "natural gas": 35.9,
-    "petroleum": 0.1,
-    "hydro": 5.8,
-    "geothermal": 0,
-    "solar": 7.6,
-    "wind": 0.4,
-    "biomass": 1.8,
-    "goal": "Carbon neutrality in the electricity sector by 2050",
-    "comment": "2021 legislation (HB 951) requires the North Carolina Utilities Commission to “take all reasonable steps” to achieve a 70% reduction in CO2 emissions from electric generating facilities in the state by 2030 and carbon neutrality by 2050. The 2022 Executive Order 246 sets an economy-wide target of net-zero emissions by \"no later than 2050,\" sets a goal that half of new vehicle sales must be electric vehicles by 2030, incorporates environmental justice and equity into climate programs, and has other measures."
-  },
-  {
-    "state": "North Dakota (United States)",
-    "nuclear": 0,
-    "coal": 57.1,
-    "natural gas": 3.4,
-    "petroleum": 0.1,
-    "hydro": 5.2,
-    "geothermal": 0,
-    "solar": 0,
-    "wind": 34.1,
-    "biomass": 0.2,
-    "goal": "NA",
-    "comment": "NA"
-  },
-  {
-    "state": "Ohio (United States)",
-    "nuclear": 14.2,
-    "coal": 37.1,
-    "natural gas": 43.9,
-    "petroleum": 0.8,
-    "hydro": 0.3,
-    "geothermal": 0,
-    "solar": 0.5,
-    "wind": 2.1,
-    "biomass": 1.1,
-    "goal": "NA",
-    "comment": "NA"
-  },
-  {
-    "state": "Oklahoma (United States)",
-    "nuclear": 0,
-    "coal": 14,
-    "natural gas": 40.8,
-    "petroleum": 0,
-    "hydro": 3.3,
-    "geothermal": 0,
-    "solar": 0.1,
-    "wind": 41.4,
-    "biomass": 0.4,
-    "goal": "NA",
-    "comment": "NA"
-  },
-  {
-    "state": "Oregon (United States)",
-    "nuclear": 0,
-    "coal": 0,
-    "natural gas": 33.3,
-    "petroleum": 0,
-    "hydro": 46.4,
-    "geothermal": 0.3,
-    "solar": 2.5,
-    "wind": 15.7,
-    "biomass": 1.7,
-    "goal": "Greenhouse gas emissions reduced 100 percent below baseline emissions by 2040",
-    "comment": "2021 legislation (HB 2021) requires investor-owned utilities to reduce greenhouse gas emissions associated with the electricity they sell to 80 percent below baseline emissions levels by 2030, 90 percent below baseline emissions levels by 2035, and 100 percent below baseline emissions levels by 2040."
-  },
-  {
-    "state": "Pennsylvania (United States)",
-    "nuclear": 31.4,
-    "coal": 12.1,
-    "natural gas": 52.7,
-    "petroleum": 0.1,
-    "hydro": 0.8,
-    "geothermal": 0,
-    "solar": 0.1,
-    "wind": 1.5,
-    "biomass": 1.4,
-    "goal": "NA",
-    "comment": "NA"
-  },
-  {
-    "state": "Puerto Rico (United States)",
-    "nuclear": "NA",
-    "coal": "NA",
-    "natural gas": "NA",
-    "petroleum": "NA",
-    "hydro": "NA",
-    "geothermal": "NA",
-    "solar": "NA",
-    "wind": "NA",
-    "biomass": "NA",
-    "goal": "100% renewable energy for electricity by 2050",
-    "comment": "2019 legislation (SB1121), the Public Energy Policy Law of Puerto Rico, set a timeline for reaching 100% renewable electricity by the year 2050."
-  },
-  {
-    "state": "Rhode Island (United States)",
-    "nuclear": 0,
-    "coal": 0,
-    "natural gas": 90.9,
-    "petroleum": 0.1,
-    "hydro": 0.1,
-    "geothermal": 0,
-    "solar": 4.2,
-    "wind": 2.2,
-    "biomass": 2.5,
-    "goal": "100% renewable energy electricity by 2033",
-    "comment": "Governor Gina Raimondo�s 2020 Executive Order (20-01) requires the Office of Energy Resources to “conduct economic and energy market analysis and develop viable policy and programmatic pathways” to meet 100% of statewide electricity deliveries with renewables by 2030. 2022 legislation (H7277 SUB A) updates the state's RPS to require 100% of RI's electricity to be offset by renewable production by 2033."
-  },
-  {
-    "state": "South Carolina (United States)",
-    "nuclear": 53.8,
-    "coal": 15.2,
-    "natural gas": 23.3,
-    "petroleum": 0.1,
-    "hydro": 3,
-    "geothermal": 0,
-    "solar": 2.3,
-    "wind": 0,
-    "biomass": 2.4,
-    "goal": "NA",
-    "comment": "NA"
-  },
-  {
-    "state": "South Dakota (United States)",
-    "nuclear": 0,
-    "coal": 9.2,
-    "natural gas": 8.7,
-    "petroleum": 0.1,
-    "hydro": 29.7,
-    "geothermal": 0,
-    "solar": 0,
-    "wind": 52.3,
-    "biomass": 0.1,
-    "goal": "NA",
-    "comment": "NA"
-  },
-  {
-    "state": "Tennessee (United States)",
-    "nuclear": 43.4,
-    "coal": 22.4,
-    "natural gas": 17.8,
-    "petroleum": 0.1,
-    "hydro": 15.1,
-    "geothermal": 0,
-    "solar": 0.4,
-    "wind": 0.1,
-    "biomass": 0.8,
-    "goal": "NA",
-    "comment": "NA"
-  },
-  {
-    "state": "Texas (United States)",
-    "nuclear": 8.3,
-    "coal": 18.4,
-    "natural gas": 48.6,
-    "petroleum": 0,
-    "hydro": 0.2,
-    "geothermal": 0,
-    "solar": 2.9,
-    "wind": 20.7,
-    "biomass": 0.9,
-    "goal": "NA",
-    "comment": "NA"
-  },
-  {
-    "state": "Utah",
-    "nuclear": 0,
-    "coal": 61.8,
-    "natural gas": 24.7,
-    "petroleum": 0.1,
-    "hydro": 1.8,
-    "geothermal": 0.8,
-    "solar": 8.1,
-    "wind": 1.9,
-    "biomass": 0.6,
-    "goal": "NA",
-    "comment": "NA"
-  },
-  {
-    "state": "Vermont (United States)",
-    "nuclear": 0,
-    "coal": 0,
-    "natural gas": 0.1,
-    "petroleum": 0.2,
-    "hydro": 50,
-    "geothermal": 0,
-    "solar": 8.8,
-    "wind": 15.7,
-    "biomass": 25.2,
-    "goal": "100% renewable energy by 2035 for all utilities and 100% renewable energy by 2030 for Green Mountain Power and Vermont Electric Coop.",
-    "comment": "2024 legislation (H289) updates the state's 2015 Renewable Energy Standard and requires all Vermont utilities to provide 100% renewable energy by 2035, with a 2030 goal for the state's two biggest utilities. The law increases the amount of in-state renewable energy utilities must procure from 10% to 20%. The law also restricts new large hydropower, expansions of existing large hydropower, and biomass power from being counted as new renewables."
-  },
-  {
-    "state": "Virginia (United States)",
-    "nuclear": 30.3,
-    "coal": 3.3,
-    "natural gas": 57.4,
-    "petroleum": 0.3,
-    "hydro": 0.8,
-    "geothermal": 0,
-    "solar": 3.6,
-    "wind": 0.1,
-    "biomass": 4.2,
-    "goal": "100% carbon-free electricity by 2045 for Dominion Energy and 2050 for Appalachian Power Company",
-    "comment": "The 2020 Virginia Clean Economy Act (House Bill 1526andSenate Bill 851) requires zero-carbon utilities by 2050 at the latest."
-  },
-  {
-    "state": "Washington (United States)",
-    "nuclear": 7.8,
-    "coal": 2.9,
-    "natural gas": 14.4,
-    "petroleum": 0,
-    "hydro": 64.6,
-    "geothermal": 0,
-    "solar": 0,
-    "wind": 8.7,
-    "biomass": 1.6,
-    "goal": "100% zero-emissions electricity by 2045",
-    "comment": "2019�s Clean Energy Transformation Act (SB5116) applies to all utilities. The state Commerce Department started a rulemaking process in August 2019. Utilities must file implementation plans by January 2022."
-  },
-  {
-    "state": "West Virginia (United States)",
-    "nuclear": 0,
-    "coal": 90.8,
-    "natural gas": 4.1,
-    "petroleum": 0.3,
-    "hydro": 2.3,
-    "geothermal": 0,
-    "solar": 0,
-    "wind": 2.5,
-    "biomass": 0.1,
-    "goal": "NA",
-    "comment": "NA"
-  },
-  {
-    "state": "Wisconsin (United States)",
-    "nuclear": 15.2,
-    "coal": 41.9,
-    "natural gas": 33.9,
-    "petroleum": 0.3,
-    "hydro": 3.8,
-    "geothermal": 0,
-    "solar": 0.6,
-    "wind": 2.5,
-    "biomass": 1.8,
-    "goal": "100% carbon-free electricity by 2050",
-    "comment": "Governor Tony Evers� Executive Order (EO38) in 2019 directed a new Office of Sustainability and Clean Energy to “achieve a goal” of all carbon-free power by 2050."
-  },
-  {
-    "state": "Wyoming (United States)",
-    "nuclear": 0,
-    "coal": 73.3,
-    "natural gas": 3.5,
-    "petroleum": 0.1,
-    "hydro": 2.3,
-    "geothermal": 0,
-    "solar": 0.4,
-    "wind": 19.4,
-    "biomass": 1,
-    "goal": "NA",
-    "comment": "NA"
-  }
+<!-- https://d3-graph-gallery.com/graph/hexbinmap_geo_basic.html -->
+<!-- used for creating the chloropleth at the end -->
+<!-- AI use: 1) for creating a function to wrap text
+             2) debugging  -->

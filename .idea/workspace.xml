@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="769e6229-3b35-4ad1-af8a-4e56f28bc692" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/milestone1.html" beforeDir="false" afterPath="$PROJECT_DIR$/milestone1.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/trial1.html" beforeDir="false" afterPath="$PROJECT_DIR$/trial1.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -51,7 +52,7 @@
     "DefaultHtmlFileTemplate": "HTML File",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "4a18a8bd",
+    "git-widget-placeholder": "main",
     "last_directory_selection": "/Users/aksharkatariya/Documents/GitHub/interactive_viz",
     "last_opened_file_path": "/Users/aksharkatariya/Documents/GitHub/interactive_viz",
     "node.js.detected.package.eslint": "true",
